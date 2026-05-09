@@ -73,12 +73,7 @@ class ArithmeticEnvironment(object):
         self.base = params.base
         self.max_class = params.max_class
 
-        #if self.operation == 'data':
-            #assert params.data_types, "argument --data_types is required"
-            #i, o = params.data_types.split(':')
-            #self.input_encoder = data_type_to_encoder(params, i)
-            #self.output_encoder = data_type_to_encoder(params, o)
-        #    self.input_encoder = encoders.NumberArray(params, 5, 'V', 1)
+        
         #    self.output_encoder = encoders.SymbolicInts(0, 10)
         #    dims=[]
         #    self.generator = generators.Sequence(params, dims)
@@ -103,9 +98,18 @@ class ArithmeticEnvironment(object):
             else:
                 self.output_encoder = encoders.SymbolicInts(0, 1)
         self.input_encoder = encoders.NumberArray(params, max_dim, 'V', tensor_dim)
+
+        if self.operation == 'data':
+            assert params.data_types, "argument --data_types is required"
+            i, o = params.data_types.split(':')
+            self.input_encoder = data_type_to_encoder(params, i)
+            self.output_encoder = data_type_to_encoder(params, o)
+            self.input_encoder = encoders.NumberArray(params, 5, 'V', 1)
+
         assert not self.export_pred or isinstance(self.output_encoder, (encoders.SymbolicInts, encoders.PositionalInts))
 
         self.generator = generators.Sequence(params, dims)
+
 
         # vocabulary
         self.words = SPECIAL_WORDS + sorted(list(
