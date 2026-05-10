@@ -100,9 +100,8 @@ class Evaluator(object):
         data_type_list = ["valid"]
         if params.eval_data != '':
             l = len(params.eval_data.split(','))
-            for i in range(l):
+            for i in range(l-1):
                 data_type_list.append("test"+(str(i+1) if i>0 else ""))
-
         with torch.no_grad():
             for data_type in data_type_list:
                 for task in params.tasks:
