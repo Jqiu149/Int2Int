@@ -108,3 +108,11 @@ class Sequence(Generator):
                         
         return 0, [],[]
 
+
+class lcmGenerator(Sequence):
+    def generate (self, rng, type):
+        inp = self.integer_sequence(2, rng, type)
+        out = math.lcm( inp[0], inp[1])
+        return inp, out
+
+        
