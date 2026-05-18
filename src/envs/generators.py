@@ -115,4 +115,10 @@ class lcmGenerator(Sequence):
         out = math.lcm( inp[0], inp[1])
         return inp, out
 
-        
+class multGenerator(Sequence):
+    def generate (self, rng, type2):
+        inp = self.integer_sequence(2, rng, type2)
+        out = inp[0]*inp[1]
+        return inp, out
+
+       

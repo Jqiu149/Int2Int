@@ -112,7 +112,10 @@ class ArithmeticEnvironment(object):
             self.generator = generators.lcmGenerator(params, dims)
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1);
             self.output_encoder= encoders.PositionalInts(params.base);
-        
+        if self.operation == "mult":
+            self.generator = generators.multGenerator(params, dims)
+            self.input_encoder=encoders.NumberArray(params, 2, 'V', 1);
+            self.output_encoder= encoders.PositionalInts(params.base);
 
         assert not self.export_pred or isinstance(self.output_encoder, (encoders.SymbolicInts, encoders.PositionalInts))
 
