@@ -74,6 +74,7 @@ class ArithmeticEnvironment(object):
         self.max_class = params.max_class
 
         
+        #    self.input_encoder = encoders.NumberArray(params, 5, 'V', 1)
         #    self.output_encoder = encoders.SymbolicInts(0, 10)
         #    dims=[]
         #    self.generator = generators.Sequence(params, dims)
@@ -104,7 +105,6 @@ class ArithmeticEnvironment(object):
             i, o = params.data_types.split(':')
             self.input_encoder = data_type_to_encoder(params, i)
             self.output_encoder = data_type_to_encoder(params, o)
-            self.input_encoder = encoders.NumberArray(params, 5, 'V', 1)
         
         self.generator = generators.Sequence(params, dims)
 
