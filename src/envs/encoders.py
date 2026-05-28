@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import numpy as np
-
+import math
 class Encoder(ABC):
     """
     Base class for encoders, encodes and decodes matrices
@@ -116,4 +116,60 @@ class NumberArray(Encoder):
             h = h[pos:]
             val[...] = v      
         return m
+
+
+def max_fit_exp(num, base):
+    assert num>=0, "max_fit_exp expects a non-negative integer for num"
+    assert base>=0, "max_fit_exp expects a non-negative integer for base"
+    
+    max_exp= 0;
+    num // base
+    while( num>0):
+       max_exp =max_exp + 1
+       num = num//base
+
+    return max_exp
+
+# encode integers in base given with token for exp size after each digit
+# i.e encode 432 in base 10 as 4 e2 3 e1 2 e0
+class PositionalIntsModified(Encoder):
+    """
+    Single integers, in base params.base (positive base), with the sign
+    """
+    def __init__(self, max_abs_int, base=10):
+        super().__init__()
+        self.base = base
+        self.symbols = ['+', '-'] + [str(i) for i in range(self.base)]        
+        self.symbols = self.symbols + ["e" + str( i) for i in range (max_fit_exp(max_abs_int, base))]
+         
+
+    def encode(self, value):
+        if value != 0:
+            prefix = []
+            w = abs(value)
+            i = 0
+            while w > 0:
+                prefix.append( "e" + str(i))
+                prefix.append(str(w % self.base))
+                i=i+1
+                w = w // self.base
+            prefix = prefix[::-1]
+        else:
+            prefix =['0', "e0"]
+        prefix = (['+'] if value >= 0 else ['-']) + prefix
+        return prefix
+
+    def parse(self,lst):
+        if len(lst) <= 1 or (lst[0] != '+' and lst[0] != '-'):
+            return None, 0
+        res = 0
+        pos = 1
+        for x in lst[1::2]:
+            if not (x.isdigit()):
+                break
+            res = res * self.base + int(x)
+            pos += 1
+        if pos < 2: return None, pos
+        return -res if lst[0] == '-' else res, pos
+
 
