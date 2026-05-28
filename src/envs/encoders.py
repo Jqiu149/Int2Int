@@ -73,57 +73,15 @@ class PositionalInts(Encoder):
         if pos < 2: return None, pos
         return -res if lst[0] == '-' else res, pos
 
-class NumberArray(Encoder):
-    """
-    Array of integers, in base params.base (any shape)
-    TODO modify to support float, complex (rationals), different subencoders
-    """
-    def __init__(self, params, max_dim, dim_prefix, tensor_dim, code='pos_int'):
-        super().__init__()
-        self.tensor_dim = tensor_dim
-        self.symbols = []
-        self.dimencoder = SymbolicInts(1, max_dim, dim_prefix)
-        self.symbols.extend(self.dimencoder.symbols)
-        if code == 'pos_int':
-            self.subencoder = PositionalInts(params.base)
-        else:
-            self.subencoder = SymbolicInts(params.min_int, params.max_int)
-        self.symbols.extend(self.subencoder.symbols)
 
-    def encode(self, vector):
-        lst = []
-        assert len(np.shape(vector)) == self.tensor_dim
-        for d in np.shape(vector):
-            lst.extend(self.dimencoder.encode(d))
-        for val in np.nditer(np.array(vector)):
-            lst.extend(self.subencoder.encode(val))
-        return lst
-
-    def decode(self, lst):
-        shap = [] 
-        h = lst
-        for _ in range(self.tensor_dim):
-            v, _ = self.dimencoder.parse(h)
-            if v is None:
-                return None
-            shap.append(v)
-            h = h[1:]
-        m = np.zeros(tuple(shap), dtype=int)
-        for val in np.nditer(m, op_flags=['readwrite']):
-            v, pos = self.subencoder.parse(h)
-            if v is None:
-                return None
-            h = h[pos:]
-            val[...] = v      
-        return m
 
 
 def max_fit_exp(num, base):
     assert num>=0, "max_fit_exp expects a non-negative integer for num"
-    assert base>=0, "max_fit_exp expects a non-negative integer for base"
+    assert base>=2, "max_fit_exp expects base to be >=2"
     
     max_exp= 0;
-    num // base
+    num = num// base
     while( num>0):
        max_exp =max_exp + 1
        num = num//base
@@ -140,8 +98,7 @@ class PositionalIntsModified(Encoder):
         super().__init__()
         self.base = base
         self.symbols = ['+', '-'] + [str(i) for i in range(self.base)]        
-        self.symbols = self.symbols + ["e" + str( i) for i in range (max_fit_exp(max_abs_int, base))]
-         
+        self.symbols = self.symbols + ["e" + str( i) for i in range (max_fit_exp(max_abs_int, base)+1)]
 
     def encode(self, value):
         if value != 0:
@@ -172,4 +129,51 @@ class PositionalIntsModified(Encoder):
         if pos < 2: return None, pos
         return -res if lst[0] == '-' else res, pos
 
+class NumberArray(Encoder):
+    """
+    Array of integers, in base params.base (any shape)
+    TODO modify to support float, complex (rationals), different subencoders
+    """
+    def __init__(self, params, max_dim, dim_prefix, tensor_dim, code='pos_int'):
+        super().__init__()
+        self.tensor_dim = tensor_dim
+        self.symbols = []
+        self.dimencoder = SymbolicInts(1, max_dim, dim_prefix)
+        self.symbols.extend(self.dimencoder.symbols)
+        if code == 'pos_int':
+            self.subencoder = PositionalInts(params.base)
+        elif code =="pos_int_modified":
+            self.subencoder= PositionalIntsModified(max(abs(params.minint), params.maxint), params.base)
+        else:
+            self.subencoder = SymbolicInts(params.minint, params.maxint)
+        self.symbols.extend(self.subencoder.symbols)
 
+        print(self.symbols)
+        
+
+    def encode(self, vector):
+        lst = []
+        assert len(np.shape(vector)) == self.tensor_dim
+        for d in np.shape(vector):
+            lst.extend(self.dimencoder.encode(d))
+        for val in np.nditer(np.array(vector)):
+            lst.extend(self.subencoder.encode(val))
+        return lst
+
+    def decode(self, lst):
+        shap = [] 
+        h = lst
+        for _ in range(self.tensor_dim):
+            v, _ = self.dimencoder.parse(h)
+            if v is None:
+                return None
+            shap.append(v)
+            h = h[1:]
+        m = np.zeros(tuple(shap), dtype=int)
+        for val in np.nditer(m, op_flags=['readwrite']):
+            v, pos = self.subencoder.parse(h)
+            if v is None:
+                return None
+            h = h[pos:]
+            val[...] = v      
+        return m

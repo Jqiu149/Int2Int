@@ -114,8 +114,10 @@ class ArithmeticEnvironment(object):
             self.output_encoder= encoders.PositionalInts(params.base);
         if self.operation == "mult":
             self.generator = generators.multGenerator(params, dims)
-            self.input_encoder=encoders.NumberArray(params, 2, 'V', 1);
-            self.output_encoder= encoders.PositionalInts(params.base);
+            self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int_modified');
+            max_abs = max( abs(params.minint), params.maxint)
+            self.output_encoder= encoders.PositionalIntsModified(max_abs**2, params.base);
+
 
         assert not self.export_pred or isinstance(self.output_encoder, (encoders.SymbolicInts, encoders.PositionalInts))
 
