@@ -98,7 +98,7 @@ class PositionalIntsModified(Encoder):
         super().__init__()
         self.base = base
         self.symbols = ['+', '-'] + [str(i) for i in range(self.base)]        
-        self.symbols = self.symbols + ["e" + str( i) for i in range (max_fit_exp(max_abs_int, base)+1)]
+        self.symbols = self.symbols + ["e" + str(i) for i in range (max_fit_exp(max_abs_int, base)+1)]
 
     def encode(self, value):
         if value != 0:
@@ -148,7 +148,6 @@ class NumberArray(Encoder):
             self.subencoder = SymbolicInts(params.minint, params.maxint)
         self.symbols.extend(self.subencoder.symbols)
 
-        print(self.symbols)
         
 
     def encode(self, vector):
