@@ -129,6 +129,46 @@ class PositionalIntsModified(Encoder):
         if pos < 2: return None, pos
         return -res if lst[0] == '-' else res, pos
 
+class PositionalIntsModified2(Encoder):
+    """
+    Single integers, in base params.base (positive base), with the sign
+    """
+    def __init__(self, max_abs_int, base=10):
+        super().__init__()
+        self.base = base
+        self.symbols = ['+', '-'] + [str(i) for i in range(max(max_fit_ex(max_abs_int)+1p, self.base))]        
+
+    def encode(self, value):
+        if value != 0:
+            prefix = []
+            w = abs(value)
+            i = 0
+            while w > 0:
+                prefix.append (string(i))
+                prefix.append( "e")
+                prefix.append(str(w % self.base))
+                i=i+1
+                w = w // self.base
+            prefix = prefix[::-1]
+        else:
+            prefix =['0', "e0"]
+        prefix = (['+'] if value >= 0 else ['-']) + prefix
+        return prefix
+
+    def parse(self,lst):
+        if len(lst) <= 1 or (lst[0] != '+' and lst[0] != '-'):
+            return None, 0
+        res = 0
+        pos = 1
+        for x in lst[1::3]:
+            if not (x.isdigit()):
+                break
+            res = res * self.base + int(x)
+            pos += 1
+        if pos < 2: return None, pos
+        return -res if lst[0] == '-' else res, pos
+
+
 class NumberArray(Encoder):
     """
     Array of integers, in base params.base (any shape)
@@ -144,6 +184,8 @@ class NumberArray(Encoder):
             self.subencoder = PositionalInts(params.base)
         elif code =="pos_int_modified":
             self.subencoder= PositionalIntsModified(max(abs(params.minint), params.maxint), params.base)
+        elif code =="pos_int_modified2":
+            self.subencoder= PositionalIntsModified2(max(abs(params.minint), params.maxint), params.base)
         else:
             self.subencoder = SymbolicInts(params.minint, params.maxint)
         self.symbols.extend(self.subencoder.symbols)

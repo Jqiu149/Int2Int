@@ -122,6 +122,12 @@ class ArithmeticEnvironment(object):
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int_modified');
             max_abs = max( abs(params.minint), params.maxint)
             self.output_encoder= encoders.PositionalIntsModified(max_abs+1, params.base);
+        if self.operation == "add2":
+            self.generator = generators.addGenerator(params, dims)
+            self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int_modified2');
+            max_abs = max( abs(params.minint), params.maxint)
+            self.output_encoder= encoders.PositionalIntsModified2(max_abs+1, params.base);
+
 
        
     
