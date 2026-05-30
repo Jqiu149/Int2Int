@@ -136,7 +136,7 @@ class PositionalIntsModified2(Encoder):
     def __init__(self, max_abs_int, base=10):
         super().__init__()
         self.base = base
-        self.symbols = ['+', '-'] + [str(i) for i in range(max(max_fit_ex(max_abs_int)+1, self.base))]        
+        self.symbols = ['+', '-', 'e'] + [str(i) for i in range(max(max_fit_exp(max_abs_int, self.base)+1, self.base))]        
 
     def encode(self, value):
         if value != 0:
@@ -144,7 +144,7 @@ class PositionalIntsModified2(Encoder):
             w = abs(value)
             i = 0
             while w > 0:
-                prefix.append (string(i))
+                prefix.append (str(i))
                 prefix.append( "e")
                 prefix.append(str(w % self.base))
                 i=i+1
