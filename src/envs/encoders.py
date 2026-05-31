@@ -168,6 +168,43 @@ class PositionalIntsModified2(Encoder):
         if pos < 2: return None, pos
         return -res if lst[0] == '-' else res, pos
 
+class PositionalIntsModified3(Encoder):
+    """
+    expected input: list of 2 integers x1x2...xn and y1...ynwith signs s1 and s2 
+        ... note some of xi yi might be zero even if leading with them
+    output form: (x1 y1) ..... (s1 x1 s2 y2)
+    """
+
+    def __init__(self, base=10):
+        super().__init__()
+        self.base = base
+        self.symbols = ['+', '-'] + [str(i) for i in range(self.base)]
+
+    def encode(self, inputs): 
+        assert np.shape(inputs) == (2,), "inputs is expected to be an np array of length 2)"
+
+        w1 = abs( inputs[0]);
+        w2 = abs(inputs[1]);
+        s1 = "+" if inputs[0]>= 0 else "-" 
+        s2= "+" if inputs[1]>= 0 else "-" 
+
+        prefix = []
+        if(w1 ==0 and w2 ==0):
+            prefix = ["(", "+", "0", "+", "0", ")"]
+        
+        while (w1 > 0 or w2 >0):
+            prefix = [ "(", s1, str(w1 % self.base), s2,str(w2 % self.base), ")"] + prefix
+            w1 = w1 //self.base
+            w2 = w2 // self.base
+ 
+        return prefix
+
+    # tbh i'm not sure if we need to oiimplement this propertly? idk what it really does/ how it fits in their cdoe... but for our purspoes don't need..... but maybe need to do b/c of thow their code works? we'll see :D 
+
+    def parse(self,lst):
+        return 0;
+
+
 
 class NumberArray(Encoder):
     """
