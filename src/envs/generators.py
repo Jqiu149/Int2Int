@@ -123,7 +123,7 @@ class multGenerator(Sequence):
 
 class multGeneratorLogUniform(Sequence):
     def generate (self, rng, type2):
-        inp = self.integer_sequence(2, rng, type2)
+        inp = self.integer_loguniform_sequence(2, rng, type2)
         out = inp[0]*inp[1]
         return inp, out
 
