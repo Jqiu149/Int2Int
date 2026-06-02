@@ -73,7 +73,40 @@ class PositionalInts(Encoder):
         if pos < 2: return None, pos
         return -res if lst[0] == '-' else res, pos
 
+class PositionalIntsRev(Encoder):
+    """
+    Single integers, in base params.base (positive base), with the sign
+    """
+    def __init__(self, base=10):
+        super().__init__()
+        self.base = base
+        self.symbols = ['+', '-'] + [str(i) for i in range(self.base)]
 
+    def encode(self, value):
+        if value != 0:
+            prefix = []
+            w = abs(value)
+            while w > 0:
+                prefix.append(str(w % self.base))
+                w = w // self.base
+            
+        else:
+            prefix =['0']
+        prefix = (['+'] if value >= 0 else ['-']) + prefix
+        return prefix
+
+    def parse(self,lst):
+        if len(lst) <= 1 or (lst[0] != '+' and lst[0] != '-'):
+            return None, 0
+        res = 0
+        pos = 1
+        for x in reversed(lst[1:]):
+            if not (x.isdigit()):
+                break
+            res = res * self.base + int(x)
+            pos += 1
+        if pos < 2: return None, pos
+        return -res if lst[0] == '-' else res, pos
 
 
 def max_fit_exp(num, base):

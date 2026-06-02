@@ -112,11 +112,15 @@ class ArithmeticEnvironment(object):
             self.generator = generators.lcmGenerator(params, dims)
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1);
             self.output_encoder= encoders.PositionalInts(params.base);
-        if self.operation == "mult":
-            self.generator = generators.multGenerator(params, dims)
-            self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int_modified');
-            max_abs = max( abs(params.minint), params.maxint)
-            self.output_encoder= encoders.PositionalIntsModified(max_abs**2, params.base);
+        if self.operation == "mult-default-rep-logUniform":
+            self.generator = generators.multGeneratorLogUniform(params, dims)
+            self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
+            self.output_encoder= encoders.PositionalInts(params.base);
+        if self.operation == "mult-default-rep-logUniform-reverse":
+            self.generator = generators.multGeneratorLogUniforme(params, dims)
+            self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
+            self.output_encoder= encoders.PositionalIntsReverse(params.base);
+
         if self.operation == "add":
             self.generator = generators.addGenerator(params, dims)
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int_modified');
