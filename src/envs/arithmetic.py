@@ -117,7 +117,7 @@ class ArithmeticEnvironment(object):
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
             self.output_encoder= encoders.PositionalInts(params.base);
         if self.operation == "mult-default-rep-logUniform-reverse":
-            self.generator = generators.multGeneratorLogUniforme(params, dims)
+            self.generator = generators.multGeneratorLogUniform(params, dims)
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
             self.output_encoder= encoders.PositionalIntsReverse(params.base);
 
