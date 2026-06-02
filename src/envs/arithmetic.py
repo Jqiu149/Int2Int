@@ -132,6 +132,19 @@ class ArithmeticEnvironment(object):
             self.input_encoder=encoders.PositionalIntsModified3(params.base)
             max_abs = max( abs(params.minint), params.maxint)
             self.output_encoder= encoders.PositionalInts( params.base);
+        if self.operation == "add3-logUniform":
+            self.generator = generators.addGeneratorLogUniform(params, dims)
+            self.input_encoder=encoders.PositionalIn(params.base)
+            max_abs = max( abs(params.minint), params.maxint)
+            self.output_encoder= encoders.PositionalInts( params.base);
+        if self.operation == "add_default-logUniform":
+            self.generator = generators.addGeneratorLogUniform(params, dims)
+            self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
+            max_abs = max( abs(params.minint), params.maxint)
+            self.output_encoder= encoders.PositionalInts( params.base);
+
+
+
 
 
 
