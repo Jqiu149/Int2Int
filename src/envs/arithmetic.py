@@ -239,6 +239,8 @@ class ArithmeticEnvironment(object):
         elif self.operation in ["add", "add2", "add3", "mult-default-rep-logUniform", "mult-default-rep-logUniform-reverse"]:
             v = self.output_encoder.decode(yi)
             return 1+ int( math.log(v, self.base))
+        elif self.operation in ["add4"]:
+            return 0
         else:
             v = self.output_encoder.decode(yi)
             assert v is not None

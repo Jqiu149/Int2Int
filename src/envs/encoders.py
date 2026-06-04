@@ -247,7 +247,7 @@ class PositionalIntsModified3(Encoder):
     # tbh i'm not sure if we need to oiimplement this propertly? idk what it really does/ how it fits in their cdoe... but for our purspoes don't need..... but maybe need to do b/c of thow their code works? we'll see :D 
 
     def parse(self,lst):
-        return 0;
+        return None, 1;
 
 
 
