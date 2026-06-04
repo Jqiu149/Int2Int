@@ -147,6 +147,15 @@ class ArithmeticEnvironment(object):
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
             max_abs = max( abs(params.minint), params.maxint)
             self.output_encoder= encoders.PositionalInts( params.base);
+        if self.operation == "add4":
+            self.generator = generators.addGeneratorStepsLogUniform(params,dims)
+
+            assert params.base == 10, "for add4 we need to be in base 10"
+
+            self.input_encoder = encoders.PositionalntsModified3(10)
+            self.output_encoder = encoders.PositionalntsModified3(10)
+            
+            
 
 
 
