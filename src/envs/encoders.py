@@ -208,10 +208,11 @@ class PositionalIntsModified3(Encoder):
     output form: (x1 y1) ..... (s1 x1 s2 y2)
     """
 
-    def __init__(self, base=10):
+    def __init__(self, base=10, includeSigns = true):
         super().__init__()
         self.base = base
         self.symbols = ['+', '-'] + [str(i) for i in range(self.base)]
+        self.includeSigns = includeSigns
 
     def encode(self, inputs): 
         assert np.shape(inputs) == (2,), "inputs is expected to be an np array of length 2)"
@@ -222,14 +223,24 @@ class PositionalIntsModified3(Encoder):
         s2= "+" if inputs[1]>= 0 else "-" 
 
         prefix = []
-        if(w1 ==0 and w2 ==0):
-            prefix = ["(", "+", "0", "+", "0", ")"]
-        
-        while (w1 > 0 or w2 >0):
-            prefix = [ "(", s1, str(w1 % self.base), s2,str(w2 % self.base), ")"] + prefix
-            w1 = w1 //self.base
-            w2 = w2 // self.base
- 
+        if self.includeSigns:
+            if(w1 ==0 and w2 ==0):
+                prefix = ["(", "+", "0", "+", "0", ")"]
+            
+            while (w1 > 0 or w2 >0):
+                prefix = [ "(", s1, str(w1 % self.base), s2,str(w2 % self.base), ")"] + prefix
+                w1 = w1 //self.base
+                w2 = w2 // self.base
+        else:
+             if(w1 ==0 and w2 ==0):
+                prefix = ["(", "0","0", ")"]
+            
+            while (w1 > 0 or w2 >0):
+                prefix = [ "(", str(w1 % self.base), str(w2 % self.base), ")"] + prefix
+                w1 = w1 //self.base
+                w2 = w2 // self.base
+
+            
         return prefix
 
     # tbh i'm not sure if we need to oiimplement this propertly? idk what it really does/ how it fits in their cdoe... but for our purspoes don't need..... but maybe need to do b/c of thow their code works? we'll see :D 
