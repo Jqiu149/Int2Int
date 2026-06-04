@@ -8,6 +8,7 @@
 from logging import getLogger
 
 import numpy as np
+import math
 import src.envs.encoders as encoders
 import src.envs.generators as generators
 
@@ -226,6 +227,9 @@ class ArithmeticEnvironment(object):
             if v >= self.max_class:
                 v = self.max_class
             return v
+        elif self.operation in ["add", "add2", "add3", "mult-default-rep-logUniform", "mult-default-rep-logUniform-reverse"]:
+            v = self.output_encoder.decode(yi)
+            return int( math.log(v, self.base))
         else:
             v = self.output_encoder.decode(yi)
             assert v is not None
