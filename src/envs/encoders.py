@@ -208,7 +208,7 @@ class PositionalIntsModified3(Encoder):
     output form: (x1 y1) ..... (s1 x1 s2 y2)
     """
 
-    def __init__(self, base=10, includeSigns = true):
+    def __init__(self, base=10, includeSigns = True):
         super().__init__()
         self.base = base
         self.symbols = ['+', '-'] + [str(i) for i in range(self.base)]
@@ -232,9 +232,10 @@ class PositionalIntsModified3(Encoder):
                 w1 = w1 //self.base
                 w2 = w2 // self.base
         else:
-             if(w1 ==0 and w2 ==0):
+            if(w1 ==0 and w2 ==0):
                 prefix = ["(", "0","0", ")"]
-            
+
+
             while (w1 > 0 or w2 >0):
                 prefix = [ "(", str(w1 % self.base), str(w2 % self.base), ")"] + prefix
                 w1 = w1 //self.base
