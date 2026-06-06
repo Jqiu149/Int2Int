@@ -248,7 +248,7 @@ class PositionalIntsModified3(Encoder):
     # tbh i'm not sure if we need to oiimplement this propertly? idk what it really does/ how it fits in their cdoe... but for our purspoes don't need..... but maybe need to do b/c of thow their code works? we'll see :D 
 
     def parse(self,lst):
-        if len(lst) <= 4:
+        if len(lst) < 4:
             return None, 0
         spacing = 6 if self.includeSigns else 4
         start1 = 2 if self.includeSigns else 1

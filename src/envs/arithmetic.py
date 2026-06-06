@@ -240,9 +240,8 @@ class ArithmeticEnvironment(object):
             v = self.output_encoder.decode(yi)
             return 1+ int( math.log(v, self.base))
         elif self.operation in ["add4"]:
-            v = self.output_encoder.decode(yi)
-            
-            return 0
+            v = self.input_encoder.decode(xi) 
+            return max( int(math.log(v[0])), int(math.log(v[1])))
         else:
             v = self.output_encoder.decode(yi)
             assert v is not None
