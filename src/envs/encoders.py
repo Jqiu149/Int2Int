@@ -205,7 +205,8 @@ class PositionalIntsModified3(Encoder):
     """
     expected input: list of 2 integers x1x2...xn and y1...ynwith signs s1 and s2 
         ... note some of xi yi might be zero even if leading with them
-    output form: (x1 y1) ..... (s1 x1 s2 y2)
+    output form: (s1 x1 s2 y1) ..... (s1 x1 s2 y2)
+        or same thing withotu the s1, s2 if includeSigns is false
     """
 
     def __init__(self, base=10, includeSigns = True):
@@ -247,7 +248,35 @@ class PositionalIntsModified3(Encoder):
     # tbh i'm not sure if we need to oiimplement this propertly? idk what it really does/ how it fits in their cdoe... but for our purspoes don't need..... but maybe need to do b/c of thow their code works? we'll see :D 
 
     def parse(self,lst):
-        return None, 1;
+        if len(lst) <= 4:
+            return None, 0
+        spacing = 6 if self.includeSign else 4
+        start1 = 2 if self.includeSign else 1
+        start2 = 4 if self.includeSign else  2
+
+        res1 = 0
+        res2 = 0
+        pos = 1
+        for x in lst[start1::spacing]:
+            if not (x.isdigit()):
+                break
+            res1 = res1 * self.base + int(x)
+            pos += 1
+
+        pos =1;
+        for x in lst[start2::spacing]:
+            if not (x.isdigit()):
+                break
+            res2 = res2 * self.base + int(x)
+            pos += 1
+
+        if(self.includeSign):
+            if(lst[1] == '-'):
+                res1 = -res1
+            if(lst[3] == '-'):
+                res2 == -res2
+
+        return [res1, res2], pos
 
 
 

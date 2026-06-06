@@ -152,8 +152,8 @@ class ArithmeticEnvironment(object):
 
             assert params.base == 10, "for add4 we need to be in base 10"
 
-            self.input_encoder = encoders.PositionalIntsModified3(10)
-            self.output_encoder = encoders.PositionalIntsModified3(10)
+            self.input_encoder = encoders.PositionalIntsModified3(10, includeSigns = False)
+            self.output_encoder = encoders.PositionalIntsModified3(10, includeSigns = False)
             
             
 
