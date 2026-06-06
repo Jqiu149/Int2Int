@@ -243,7 +243,7 @@ class PositionalIntsModified3(Encoder):
                 w1 = w1 //self.base
                 w2 = w2 // self.base
 
-        if (reverseOrder):
+        if (self.reverseOrder):
             prefix.reverse()
             
         return prefix
