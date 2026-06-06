@@ -224,61 +224,70 @@ class PositionalIntsModified3(Encoder):
         s1 = "+" if inputs[0]>= 0 else "-" 
         s2= "+" if inputs[1]>= 0 else "-" 
 
+
         prefix = []
+
         if self.includeSigns:
             if(w1 ==0 and w2 ==0):
-                prefix = ["(", "+", "0", "+", "0", ")"]
+                prefix.append(["(", "+", "0", "+", "0", ")"])
             
             while (w1 > 0 or w2 >0):
-                prefix = [ "(", s1, str(w1 % self.base), s2,str(w2 % self.base), ")"] + prefix
+                prefix.append([ "(", s1, str(w1 % self.base), s2,str(w2 % self.base), ")"] )
                 w1 = w1 //self.base
                 w2 = w2 // self.base
         else:
             if(w1 ==0 and w2 ==0):
-                prefix = ["(", "0","0", ")"]
-
+                prefix.append( ["(", "0","0", ")"])
 
             while (w1 > 0 or w2 >0):
-                prefix = [ "(", str(w1 % self.base), str(w2 % self.base), ")"] + prefix
+                prefix.append([ "(", str(w1 % self.base), str(w2 % self.base), ")"])
                 w1 = w1 //self.base
                 w2 = w2 // self.base
 
-        if (self.reverseOrder):
+        if (not self.reverseOrder):
             prefix.reverse()
             
-        return prefix
+        return [x for xs in prefix for x in xs]
 
     # tbh i'm not sure if we need to oiimplement this propertly? idk what it really does/ how it fits in their cdoe... but for our purspoes don't need..... but maybe need to do b/c of thow their code works? we'll see :D 
 
     def parse(self,lst):
+
         if len(lst) < 4:
             return None, 0
         spacing = 6 if self.includeSigns else 4
         start1 = 2 if self.includeSigns else 1
         start2 = 4 if self.includeSigns else  2
 
-        lstcpy = lst[::-1] if self.reverseOrder else lst
 
         res1 = 0
         res2 = 0
-        pos = 1
-        for x in lstcpy[start1::spacing]:
+
+        pos = 0
+        for x in lst[start1::spacing]:
             if not (x.isdigit()):
                 break
-            res1 = res1 * self.base + int(x)
+            if( self.reverseOrder):
+                res1 =res1+ self.base**(pos)
+            else:
+                res1 = res1 * self.base + int(x)
+
+
+        pos =0;
+        for x in lst[start2::spacing]:
+            if not (x.isdigit()):
+                break
+            if (self.reverseOrder):
+                res2=res2+self.base**pos
+            else:
+                res2 = res2 * self.base + int(x)
             pos += 1
 
-        pos =1;
-        for x in lstcpy[start2::spacing]:
-            if not (x.isdigit()):
-                break
-            res2 = res2 * self.base + int(x)
-            pos += 1
 
         if(self.includeSigns):
-            if(lstcpy[1] == '-'):
+            if(lst[1] == '-'):
                 res1 = -res1
-            if(lstcpy[3] == '-'):
+            if(lst[3] == '-'):
                 res2 == -res2
 
         return [res1, res2], pos

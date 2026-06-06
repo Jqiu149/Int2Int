@@ -154,6 +154,13 @@ class ArithmeticEnvironment(object):
 
             self.input_encoder = encoders.PositionalIntsModified3(10, includeSigns = False)
             self.output_encoder = encoders.PositionalIntsModified3(10, includeSigns = False)
+        if self.operation == "add4-rev":
+            self.generator = generators.addGeneratorStepsLogUniform(params,dims)
+
+            assert params.base == 10, "for add4 we need to be in base 10"
+    
+            self.input_encoder = encoders.PositionalIntsModified3(10, includeSigns = False)
+            self.output_encoder = encoders.PositionalIntsModified3(10, includeSigns = False, reverseOrder=True)
             
             
 
@@ -239,7 +246,7 @@ class ArithmeticEnvironment(object):
         elif self.operation in ["add", "add2", "add3", "mult-default-rep-logUniform", "mult-default-rep-logUniform-reverse"]:
             v = self.output_encoder.decode(yi)
             return 1+ int( math.log(v, self.base))
-        elif self.operation in ["add4"]:
+        elif self.operation in ["add4", "add4-rev"]:
             v = self.input_encoder.decode(xi) 
             return max( int(math.log10(v[0])), int(math.log10(v[1])))+1
         else:
