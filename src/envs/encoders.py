@@ -250,9 +250,9 @@ class PositionalIntsModified3(Encoder):
     def parse(self,lst):
         if len(lst) <= 4:
             return None, 0
-        spacing = 6 if self.includeSign else 4
-        start1 = 2 if self.includeSign else 1
-        start2 = 4 if self.includeSign else  2
+        spacing = 6 if self.includeSigns else 4
+        start1 = 2 if self.includeSigns else 1
+        start2 = 4 if self.includeSigns else  2
 
         res1 = 0
         res2 = 0
@@ -270,7 +270,7 @@ class PositionalIntsModified3(Encoder):
             res2 = res2 * self.base + int(x)
             pos += 1
 
-        if(self.includeSign):
+        if(self.includeSigns):
             if(lst[1] == '-'):
                 res1 = -res1
             if(lst[3] == '-'):

@@ -240,6 +240,8 @@ class ArithmeticEnvironment(object):
             v = self.output_encoder.decode(yi)
             return 1+ int( math.log(v, self.base))
         elif self.operation in ["add4"]:
+            v = self.output_encoder.decode(yi)
+            
             return 0
         else:
             v = self.output_encoder.decode(yi)
