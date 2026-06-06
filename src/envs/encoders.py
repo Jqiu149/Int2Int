@@ -209,11 +209,12 @@ class PositionalIntsModified3(Encoder):
         or same thing withotu the s1, s2 if includeSigns is false
     """
 
-    def __init__(self, base=10, includeSigns = True):
+    def __init__(self, base=10, includeSigns = True, reverseOrder = False):
         super().__init__()
         self.base = base
         self.symbols = ['+', '-'] + [str(i) for i in range(self.base)]
         self.includeSigns = includeSigns
+        self.reverseOrder = reverseOrder
 
     def encode(self, inputs): 
         assert np.shape(inputs) == (2,), "inputs is expected to be an np array of length 2)"
@@ -242,6 +243,8 @@ class PositionalIntsModified3(Encoder):
                 w1 = w1 //self.base
                 w2 = w2 // self.base
 
+        if (reverseOrder):
+            prefix.reverse()
             
         return prefix
 
@@ -254,26 +257,28 @@ class PositionalIntsModified3(Encoder):
         start1 = 2 if self.includeSigns else 1
         start2 = 4 if self.includeSigns else  2
 
+        lstcpy = lst[::-1] if self.reverseOrder else lst
+
         res1 = 0
         res2 = 0
         pos = 1
-        for x in lst[start1::spacing]:
+        for x in lstcpy[start1::spacing]:
             if not (x.isdigit()):
                 break
             res1 = res1 * self.base + int(x)
             pos += 1
 
         pos =1;
-        for x in lst[start2::spacing]:
+        for x in lstcpy[start2::spacing]:
             if not (x.isdigit()):
                 break
             res2 = res2 * self.base + int(x)
             pos += 1
 
         if(self.includeSigns):
-            if(lst[1] == '-'):
+            if(lstcpy[1] == '-'):
                 res1 = -res1
-            if(lst[3] == '-'):
+            if(lstcpy[3] == '-'):
                 res2 == -res2
 
         return [res1, res2], pos
