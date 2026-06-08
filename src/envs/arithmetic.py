@@ -260,7 +260,7 @@ class ArithmeticEnvironment(object):
             if v >= self.max_class:
                 v = self.max_class
             return v
-        elif self.operation in ["add", "add2", "add3", "mult-default-rep-logUniform", "mult-default-rep-logUniform-reverse"]:
+        elif self.operation in ["add", "add2", "add3", "mult-default-rep-logUniform", "mult-default-rep-logUniform-reverse", "mult-pairedRep-outputDefault-reverse","mult-ExpRep-reverse", "mult-pairedRep-outputExpRep-reverse"]:
             v = self.output_encoder.decode(yi)
             return 1+ int( math.log(v, self.base))
         elif self.operation in ["add4", "add4-rev"]:
