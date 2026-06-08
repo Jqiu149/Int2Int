@@ -162,13 +162,14 @@ class PositionalIntsModified(Encoder):
         if pos < 2: return None, pos
         return -res if lst[0] == '-' else res, pos
 
-class PositionalIntsModified2(Encoder):
+class PositionalIntsExp(Encoder):
     """
     Single integers, in base params.base (positive base), with the sign
     """
-    def __init__(self, max_abs_int, base=10):
+    def __init__(self, max_abs_int, base=10, reverse= False):
         super().__init__()
         self.base = base
+        self.reverse = False
         self.symbols = ['+', '-', 'e'] + [str(i) for i in range(max(max_fit_exp(max_abs_int, self.base)+1, self.base))]        
 
     def encode(self, value):
@@ -182,7 +183,9 @@ class PositionalIntsModified2(Encoder):
                 prefix.append(str(w % self.base))
                 i=i+1
                 w = w // self.base
-            prefix = prefix[::-1]
+            if( not self.reverse):
+                prefix = prefix[::-1]
+
         else:
             prefix =['0', "e0"]
         prefix = (['+'] if value >= 0 else ['-']) + prefix
@@ -193,7 +196,9 @@ class PositionalIntsModified2(Encoder):
             return None, 0
         res = 0
         pos = 1
-        for x in lst[1::3]:
+        start = -1 if self.reverse else 1
+
+        for x in lst[start::3]:
             if not (x.isdigit()):
                 break
             res = res * self.base + int(x)
@@ -201,7 +206,7 @@ class PositionalIntsModified2(Encoder):
         if pos < 2: return None, pos
         return -res if lst[0] == '-' else res, pos
 
-class PositionalIntsModified3(Encoder):
+class PositionalIntsPaired(Encoder):
     """
     expected input: list of 2 integers x1x2...xn and y1...ynwith signs s1 and s2 
         ... note some of xi yi might be zero even if leading with them

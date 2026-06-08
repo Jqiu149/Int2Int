@@ -121,6 +121,17 @@ class ArithmeticEnvironment(object):
             self.generator = generators.multGeneratorLogUniform(params, dims)
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
             self.output_encoder= encoders.PositionalIntsRev(params.base);
+        if self.operation == "mult-pairedRep-outputDefault-reverse":
+            self.generator = generators.multGeneratorLogUniform(params, dims)
+            assert params.base == 10, "for PairedRepresentaion we need to be in base 10"
+            self.input_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
+            self.output_encoder = encoders.PositionalIntsRev(params.base)
+        if self.operation == "mult-pairedRep-outputExpRep-reverse":
+            self.generator = generators.multGeneratorLogUniform(params, dims)
+            assert params.base == 10, "for PairedRepresentaion we need to be in base 10"
+            self.input_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
+            maxDigits = int(log(params.maxint**2))+1
+            self.output_encoder = encoders.PositionalIntsExp(maxDigits, params.base, reverse=True)
 
         if self.operation == "add":
             self.generator = generators.addGenerator(params, dims)
@@ -131,10 +142,10 @@ class ArithmeticEnvironment(object):
             self.generator = generators.addGenerator(params, dims)
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int_modified2');
             max_abs = max( abs(params.minint), params.maxint)
-            self.output_encoder= encoders.PositionalIntsModified2(max_abs+1, params.base);
+            self.output_encoder= encoders.PositionalIntsExp(max_abs+1, params.base);
         if self.operation == "add3":
             self.generator = generators.addGenerator(params, dims)
-            self.input_encoder=encoders.PositionalIntsModified3(params.base)
+            self.input_encoder=encoders.PositionalIntsPaired(params.base)
             max_abs = max( abs(params.minint), params.maxint)
             self.output_encoder= encoders.PositionalInts( params.base);
         if self.operation == "add3-logUniform":
@@ -147,20 +158,20 @@ class ArithmeticEnvironment(object):
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
             max_abs = max( abs(params.minint), params.maxint)
             self.output_encoder= encoders.PositionalInts( params.base);
-        if self.operation == "add4":
+        if self.operation == "oneStepAddition":
             self.generator = generators.addGeneratorStepsLogUniform(params,dims)
 
             assert params.base == 10, "for add4 we need to be in base 10"
 
-            self.input_encoder = encoders.PositionalIntsModified3(10, includeSigns = False)
-            self.output_encoder = encoders.PositionalIntsModified3(10, includeSigns = False)
+            self.input_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
+            self.output_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
         if self.operation == "add4-rev":
             self.generator = generators.addGeneratorStepsLogUniform(params,dims)
 
             assert params.base == 10, "for add4 we need to be in base 10"
     
-            self.input_encoder = encoders.PositionalIntsModified3(10, includeSigns = False)
-            self.output_encoder = encoders.PositionalIntsModified3(10, includeSigns = False, reverseOrder=True)
+            self.input_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
+            self.output_encoder = encoders.PositionalIntsPaired(10, includeSigns = False, reverseOrder=True)
             
             
 
