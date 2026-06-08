@@ -131,19 +131,19 @@ class multGeneratorLogUniform(Sequence):
 
 class multGenerator_1xn_LogUniform(Sequence):
     def generate (self, rng, type2):
-        inp = [self.integer_loguniform_sequence(1, rng, type2), self.integer_sequence(1,rng,type2, max=9)]
+        inp = [self.integer_loguniform_sequence(1, rng, type2)[0],  self.integer_sequence(1,rng,type2, max=9)[0]]
         out = inp[0]*inp[1]
         return inp, out
 
 class multGenerator_1xnWeighted_LogUniform(Sequence):
     def generate (self, rng, type2, weight = 0.3):
-        case = random.choices(['1xn','mxn'], weights = [weight*10, 7])[0]
+        rand = self.integer_sequence(1,rng,type2, max=10)[0] 
 
-        if (case == '1xn'):
-            inp = [self.integer_loguniform_sequence(1, rng, type2), self.integer_sequence(1,rng,type2, max=9)]
+        if (rand <=3 ):
+            inp = [self.integer_loguniform_sequence(1, rng, type2)[0], self.integer_sequence(1,rng,type2, max=9)[0]]
         else:
-            inp = [x+9 for x in self.integer_loguniform_sequence(2, rng, type2, max=self.maxint-9)] 
-    
+            inp = [x+9 for x in self.integer_loguniform_sequence(2, rng, type2, max=self.maxint-9)]
+
         out = inp[0]*inp[1]
         return inp, out
 

@@ -269,7 +269,7 @@ class ArithmeticEnvironment(object):
             if v >= self.max_class:
                 v = self.max_class
             return v
-        elif self.operation in ["add", "add2", "add3", "mult-default-rep-logUniform", "mult-default-rep-logUniform-reverse", "mult-pairedRep-outputDefault-reverse","mult-ExpRep-reverse", "mult-pairedRep-outputExpRep-reverse"]:
+        elif self.operation in ["add", "add2", "add3", "mult-default-rep-logUniform", "mult-default-rep-logUniform-reverse", "mult-pairedRep-outputDefault-reverse","mult-ExpRep-reverse", "mult-pairedRep-outputExpRep-reverse", "mult-1xn-defaultRep", "mult-defaultRep-weightedSimple"]:
 
             
             assert self.max_class >= int(math.log10(int(math.log10(self.maxint)+1)))*2+1
