@@ -113,12 +113,16 @@ class ArithmeticEnvironment(object):
             self.generator = generators.lcmGenerator(params, dims)
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1);
             self.output_encoder= encoders.PositionalInts(params.base);
-        if self.operation == "mult-default-rep-logUniform":
+        if self.operation == "mult-defaultRep-logUniform":
             self.generator = generators.multGeneratorLogUniform(params, dims)
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
             self.output_encoder= encoders.PositionalInts(params.base);
-        if self.operation == "mult-default-rep-logUniform-reverse":
+        if self.operation == "mult-defaultRep-logUniform-reverse":
             self.generator = generators.multGeneratorLogUniform(params, dims)
+            self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
+            self.output_encoder= encoders.PositionalIntsRev(params.base);
+        if self.operation == "mult-1xn-defaultRep":
+            self.generator = generators.multGenerator_1xn_LogUniform(params, dims)
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
             self.output_encoder= encoders.PositionalIntsRev(params.base);
         if self.operation == "mult-pairedRep-outputDefault-reverse":
@@ -164,14 +168,14 @@ class ArithmeticEnvironment(object):
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
             max_abs = max( abs(params.minint), params.maxint)
             self.output_encoder= encoders.PositionalInts( params.base);
-        if self.operation == "oneStepAddition":
+        if self.operation == "oneStepAdd":
             self.generator = generators.addGeneratorStepsLogUniform(params,dims)
 
             assert params.base == 10, "for add4 we need to be in base 10"
 
             self.input_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
             self.output_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
-        if self.operation == "add4-rev":
+        if self.operation == "oneStepAdd-rev":
             self.generator = generators.addGeneratorStepsLogUniform(params,dims)
 
             assert params.base == 10, "for add4 we need to be in base 10"
