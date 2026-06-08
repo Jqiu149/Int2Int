@@ -125,6 +125,10 @@ class ArithmeticEnvironment(object):
             self.generator = generators.multGenerator_1xn_LogUniform(params, dims)
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
             self.output_encoder= encoders.PositionalIntsRev(params.base);
+        if self.operation == "mult-defaultRep-weightedSimple":
+            self.generator = generators.multGenerator_1xnWeighted_LogUniform(params, dims)
+            self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int');
+            self.output_encoder= encoders.PositionalIntsRev(params.base);
         if self.operation == "mult-pairedRep-outputDefault-reverse":
             self.generator = generators.multGeneratorLogUniform(params, dims)
             assert params.base == 10, "for PairedRepresentaion we need to be in base 10"
