@@ -132,6 +132,12 @@ class ArithmeticEnvironment(object):
             self.input_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
             maxDigits = int(log(params.maxint**2))+1
             self.output_encoder = encoders.PositionalIntsExp(maxDigits, params.base, reverse=True)
+        if self.operation == "ExpRep-reverse":
+            self.generator = generators.multGeneratorLogUniform(params, dims)
+            self.input_encoder = encoders.PositionalIntsExp(int(log(params.maxint))+2, params.base) 
+            maxDigits = int(log(params.maxint**2))+2
+            self.output_encoder = encoders.PositionalIntsExp(maxDigits, params.base, reverse=True)
+
 
         if self.operation == "add":
             self.generator = generators.addGenerator(params, dims)
