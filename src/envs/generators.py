@@ -36,6 +36,7 @@ class Sequence(Generator):
         lgs = math.log10(maxint)*rng.rand(len)
         return np.int64(10 ** lgs)
 
+
     # integers from minint to maxint, uniform distribution
     def integer_sequence(self, len, rng, type=None, max=None):
         maxint = self.maxint if max is None else max
@@ -134,6 +135,17 @@ class multGenerator_1xn_LogUniform(Sequence):
         out = inp[0]*inp[1]
         return inp, out
 
+class multGenerator_1xnWeighted_LogUniform(Sequence):
+    def generate (self, rng, type2, weight = 0.3):
+        case = random.choices(['1xn','mxn'], weights = [weight*10, 7])[0]
+
+        if (case == '1xn'):
+            inp = [self.integer_loguniform_sequence(1, rng, type2), self.integer_sequence(1,rng,type2, max=9)]
+        else:
+            inp = [x+9 for x in self.integer_loguniform_sequence(2, rng, type2, max=self.maxint-9)] 
+    
+        out = inp[0]*inp[1]
+        return inp, out
 
 
 class addGenerator(Sequence):
@@ -149,8 +161,11 @@ class addGeneratorLogUniform(Sequence):
         return inp, out
 
 
-#base 10 specifically
-def sumGetCarry(n1, n2):
+# i think need to assume the base is specific thing cus.... we don't get acess to it here and the carries depend on them..
+class addGeneratorStepsLogUniform(Sequence):
+
+    #base 10 specifically
+    def sumGetCarry(n1, n2):
      
     carrySum = 0
     exp = 1
@@ -167,8 +182,7 @@ def sumGetCarry(n1, n2):
 
     return carrySum
 
-# i think need to assume the base is specific thing cus.... we don't get acess to it here and the carries depend on them..
-class addGeneratorStepsLogUniform(Sequence):
+
     def generate (self, rng, type2):
         inp = self.integer_loguniform_sequence(2, rng, type2)
         
