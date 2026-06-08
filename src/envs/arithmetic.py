@@ -68,6 +68,7 @@ class ArithmeticEnvironment(object):
     TRAINING_TASKS = {"arithmetic"}
 
     def __init__(self, params):
+        self.maxint = params.maxint
         self.max_len = params.max_len
         self.operation = params.operation
         
@@ -269,11 +270,15 @@ class ArithmeticEnvironment(object):
                 v = self.max_class
             return v
         elif self.operation in ["add", "add2", "add3", "mult-default-rep-logUniform", "mult-default-rep-logUniform-reverse", "mult-pairedRep-outputDefault-reverse","mult-ExpRep-reverse", "mult-pairedRep-outputExpRep-reverse"]:
+
+            
+            assert self.max_class >= int(math.log10(int(math.log10(self.maxint)+1)))*2+1
+
             v = self.input_encoder.decode(xi)
-            seperator = "707070"
+            seperator = "0"
 
             smaller = min(v)
-            bigger = min(v)
+            bigger = max(v)
 
             smallerNumDigits = int(math.log10(smaller)) +1
             biggerNumDigits = int(math.log10(bigger)) +1
