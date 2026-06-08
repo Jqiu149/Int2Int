@@ -138,12 +138,12 @@ class ArithmeticEnvironment(object):
             self.generator = generators.multGeneratorLogUniform(params, dims)
             assert params.base == 10, "for PairedRepresentaion we need to be in base 10"
             self.input_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
-            maxDigits = int(log10(params.maxint**2))+1
+            maxDigits = int(math.log10(params.maxint**2))+1
             self.output_encoder = encoders.PositionalIntsExp(maxDigits, params.base, reverse=True)
         if self.operation == "mult-ExpRep-reverse":
             self.generator = generators.multGeneratorLogUniform(params, dims)
-            self.input_encoder = encoders.PositionalIntsExp(int(log10(params.maxint))+2, params.base) 
-            maxDigits = int(log10(params.maxint**2))+2
+            self.input_encoder = encoders.PositionalIntsExp(int(math.log10(params.maxint))+2, params.base) 
+            maxDigits = int(math.log10(params.maxint**2))+2
             self.output_encoder = encoders.PositionalIntsExp(maxDigits, params.base, reverse=True)
 
 
@@ -269,14 +269,14 @@ class ArithmeticEnvironment(object):
                 v = self.max_class
             return v
         elif self.operation in ["add", "add2", "add3", "mult-default-rep-logUniform", "mult-default-rep-logUniform-reverse", "mult-pairedRep-outputDefault-reverse","mult-ExpRep-reverse", "mult-pairedRep-outputExpRep-reverse"]:
-            v = self.output_encoder.decode(xi)
+            v = self.input_encoder.decode(xi)
             seperator = "707070"
 
             smaller = min(v)
             bigger = min(v)
 
-            smallerNumDigits = int(log10(smaller)) +1
-            biggerNumDigits = int(log10(bigger)) +1
+            smallerNumDigits = int(math.log10(smaller)) +1
+            biggerNumDigits = int(math.log10(bigger)) +1
 
             return int( str(smallerNumDigits) + seperator  + str(biggerNumDigits))
         elif self.operation in ["add4", "add4-rev"]:

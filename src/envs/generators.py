@@ -167,20 +167,20 @@ class addGeneratorStepsLogUniform(Sequence):
     #base 10 specifically
     def sumGetCarry(n1, n2):
      
-    carrySum = 0
-    exp = 1
-    while ( n1>0 and n2>0):
-        d1 = n1 % 10
-        d2 = n2 % 10
+        carrySum = 0
+        exp = 1
+        while ( n1>0 and n2>0):
+            d1 = n1 % 10
+            d2 = n2 % 10
 
-        if(d1+d2 >= 10):
-            carrySum = carrySum + 10**exp
+            if(d1+d2 >= 10):
+                carrySum = carrySum + 10**exp
 
-        n1 = n1 // 10
-        n2 = n2 // 10
-        exp = exp+1
+            n1 = n1 // 10
+            n2 = n2 // 10
+            exp = exp+1
 
-    return carrySum
+        return carrySum
 
 
     def generate (self, rng, type2):
