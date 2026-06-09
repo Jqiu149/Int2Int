@@ -189,6 +189,7 @@ class ArithmeticEnvironment(object):
             self.output_encoder = encoders.PositionalIntsPaired(10, includeSigns = False, reverseOrder=True)
 
         if self.operation == "oneStepAddPad-rev":
+            print("hi??")
             self.generator = generators.addGeneratorStepsLogUniform(params,dims)
             assert params.base == 10, "for add4 we need to be in base 10"
     

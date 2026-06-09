@@ -307,6 +307,7 @@ class PositionalIntsPairedPadded(Encoder):
     def __init__(self, maxLen, base=10, includeSigns = True, reverseOrder = False):
         super().__init__()
         self.base = base
+        self.maxLen = maxLen
         self.symbols = ['+', '-'] + [str(i) for i in range(self.base)]
         self.includeSigns = includeSigns
         self.reverseOrder = reverseOrder
@@ -335,7 +336,7 @@ class PositionalIntsPairedPadded(Encoder):
                 w2 = w2 // self.base
                 currentLen+=6
                 
-            for i in range( int( (maxLen - currentLen )/ 6)):
+            for i in range( int( (self.maxLen - currentLen )/ 6)):
                 prefix.append(["(", s1, "0", s2, "0", ")"])
 
         else:
@@ -349,8 +350,8 @@ class PositionalIntsPairedPadded(Encoder):
                 w2 = w2 // self.base
                 currentLen+=4
             
-                for i in range( int( (maxLen - currentLen )/ 4)):
-                    prefix.append(["(", s1, "0", s2, "0", ")"])
+            for i in range( int( (self.maxLen - currentLen )/ 4)):
+                prefix.append(["(", s1, "0", s2, "0", ")"])
 
         if (not self.reverseOrder):
             prefix.reverse()
