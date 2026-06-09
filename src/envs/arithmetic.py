@@ -188,8 +188,10 @@ class ArithmeticEnvironment(object):
             self.input_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
             self.output_encoder = encoders.PositionalIntsPaired(10, includeSigns = False, reverseOrder=True)
             
-            
-
+        if self.operation == "lattice"
+            self.generator=generators.linIndepR2Generator(params, dims)
+            self.input_encoder = encoders.NumberArray(params,2,'V', 1, 'pos_int')
+            self.output_encoder = encoders.NumberArray(params,2,'V',1,'pos_int')
 
 
 
@@ -288,11 +290,8 @@ class ArithmeticEnvironment(object):
             v = self.input_encoder.decode(xi) 
             return max( int(math.log10(v[0])), int(math.log10(v[1])))+1
         else:
-            v = self.output_encoder.decode(yi)
             assert v is not None
-            if isinstance(self.output_encoder, encoders.NumberArray):
-                v = v[0]
-            return v % self.max_class
+            return 0
 
     def check_prediction(self, src, tgt, hyp):
         w = self.output_encoder.decode(hyp)

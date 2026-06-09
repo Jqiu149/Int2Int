@@ -190,4 +190,40 @@ class addGeneratorStepsLogUniform(Sequence):
         return inp, out
 
 
-      
+# feel like this isn't great.... some worry about like rounding and computer math in general...
+# but i think we're doing integers only so might be fine? tried to avoid division... 
+def pairVectorsR2LinearIndep(v1,v2):
+      return  v1[0]*v2[1] != v2[0]*v1[1]
+
+#take in 2 LINEARLY INDEPENDENT vectors in R^2 (lists of length 2)
+# output minimal basis [u1, u2] where ||u1||<=||u2|| ?
+def LagrangeReduce(v1,v2):
+    assert np.shape(v1) == (2,), f"LagrangeReduce expects v1 to be shape (2,0), v1 is ${v1} and v2 is ${v2}"
+    assert np.shape(v2) == (2,), f"LagrangeReduce expects v1 to be shape (2,0), v1 is ${v1} and v2 is ${v2}"
+    assert pairVectorsR2LinearIndep(v1,v2), f"LagrangeReduce expects v1 and v2 to be linearly independent. v1 is ${v1} and v2 is ${v2}"
+
+    v1 = np.array(v1)
+    v2 = np.array(v2)
+
+    norm1 = np.linalg.norm(v1)
+    norm2 = np.linalg.norm(v2)
+
+    while(norm1 > norm2 ):
+        if(norm1 > norm2):
+            v1,v2 = v2,v1
+            norm1,norm2 = norm2,norm1
+
+        u = math.floor( (np.dot(v1,v2))/ norm1**2)
+        v2 = v2-u*v1
+        norm2 = np.linalg.norm(v)
+
+    return v1.tolist() ,v2.tolist()
+
+
+class linIndepR2Generator(Sequence):
+    def generate(self, rng, type2): inp = [self.integer_sequence(2,rng,type2) for i in range(2)] 
+    if not pairVectorsR2LinearIndep(inp[0], inp[1]) : 
+        inp[0][0] +=1
+    out = LagrangeReduce(inp[0], inp[1])
+
+    return inp, out
