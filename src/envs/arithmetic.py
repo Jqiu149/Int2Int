@@ -187,6 +187,14 @@ class ArithmeticEnvironment(object):
     
             self.input_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
             self.output_encoder = encoders.PositionalIntsPaired(10, includeSigns = False, reverseOrder=True)
+
+        if self.operation == "oneStepAddPad-rev":
+            self.generator = generators.addGeneratorStepsLogUniform(params,dims)
+            assert params.base == 10, "for add4 we need to be in base 10"
+    
+            self.input_encoder = encoders.PositionalIntsPairedPadded(self.max_len,10, includeSigns = False)
+            self.output_encoder = encoders.PositionalIntsPairedPadded(self.max_len, 10, includeSigns = False, reverseOrder=True)
+         
             
         if self.operation == "lattice":
             self.generator=generators.linIndepR2Generator(params, dims)
@@ -286,8 +294,8 @@ class ArithmeticEnvironment(object):
             biggerNumDigits = int(math.log10(bigger)) +1
 
             return int( str(smallerNumDigits) + seperator  + str(biggerNumDigits))
-        elif self.operation in ["oneStepAdd", "oneStepAdd-rev"]:
-            v = self.input_encoder.decode(xi) 
+        elif self.operation in ["oneStepAdd", "oneStepAddPad","oneStepAddPad-rev", "oneStepAdd-rev"]:
+            v = self.input_encoder.decode(yi) 
             return max( int(math.log10(v[0])), int(math.log10(v[1])))+1
         else:
             v = self.output_encoder.decode(yi)

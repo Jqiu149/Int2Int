@@ -224,8 +224,20 @@ def LagrangeReduce(v1,v2):
 class linIndepR2Generator(Sequence):
     def generate(self, rng, type2): 
         inp = self.integer_sequence(4,rng,type2)
-        if not pairVectorsR2LinearIndep(inp[0:2], inp[2:4]) : 
-            inp[0] +=1
+        if inp[0] ==0 and inp[1] ==0 :
+            inp[0]+=1
+        if inp[2] ==0 and inp[3] ==0: 
+            inp[3] ==1
+
+        counter = 1
+        while( not pairVectorsR2LinearIndep(inp[0:2], inp[2:4])):
+            inp[2:4] = self.integer_sequence(2,rng,type2)
+            counter+=1
+
+            if(counter >100):
+                raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}")
+                break
+            
         out = LagrangeReduce(inp[0:2], inp[2:4])
 
         return inp, out

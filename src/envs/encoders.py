@@ -254,7 +254,6 @@ class PositionalIntsPaired(Encoder):
             
         return [x for xs in prefix for x in xs]
 
-    # tbh i'm not sure if we need to oiimplement this propertly? idk what it really does/ how it fits in their cdoe... but for our purspoes don't need..... but maybe need to do b/c of thow their code works? we'll see :D 
 
     def parse(self,lst):
 
@@ -296,6 +295,110 @@ class PositionalIntsPaired(Encoder):
                 res2 == -res2
 
         return [res1, res2], pos
+
+class PositionalIntsPairedPadded(Encoder):
+    """
+    expected input: list of 2 integers x1x2...xn and y1...ynwith signs s1 and s2 
+        ... note some of xi yi might be zero even if leading with them
+    output form: (0 0) .... (0 0) (s1 x1 s2 y1) ..... (s1 x1 s2 y2)
+        or same thing withotu the s1, s2 if includeSigns is false
+    """
+
+    def __init__(self, maxLen, base=10, includeSigns = True, reverseOrder = False):
+        super().__init__()
+        self.base = base
+        self.symbols = ['+', '-'] + [str(i) for i in range(self.base)]
+        self.includeSigns = includeSigns
+        self.reverseOrder = reverseOrder
+
+    def encode(self, inputs): 
+        assert np.shape(inputs) == (2,), "inputs is expected to be an np array of length 2)"
+
+        w1 = abs( inputs[0]);
+        w2 = abs(inputs[1]);
+        s1 = "+" if inputs[0]>= 0 else "-" 
+        s2= "+" if inputs[1]>= 0 else "-" 
+
+
+        prefix = []
+
+        currentLen= 0
+
+        if self.includeSigns:
+            if(w1 ==0 and w2 ==0):
+                prefix.append(["(", "+", "0", "+", "0", ")"])
+                currentLen=  6
+            
+            while (w1 > 0 or w2 >0):
+                prefix.append([ "(", s1, str(w1 % self.base), s2,str(w2 % self.base), ")"] )
+                w1 = w1 //self.base
+                w2 = w2 // self.base
+                currentLen+=6
+                
+            for i in range( int( (maxLen - currentLen )/ 6)):
+                prefix.append(["(", s1, "0", s2, "0", ")"])
+
+        else:
+            if(w1 ==0 and w2 ==0):
+                prefix.append( ["(", "0","0", ")"])
+                currentLen= 4
+            
+            while (w1 > 0 or w2 >0):
+                prefix.append([ "(", str(w1 % self.base), str(w2 % self.base), ")"])
+                w1 = w1 //self.base
+                w2 = w2 // self.base
+                currentLen+=4
+            
+                for i in range( int( (maxLen - currentLen )/ 4)):
+                    prefix.append(["(", s1, "0", s2, "0", ")"])
+
+        if (not self.reverseOrder):
+            prefix.reverse()
+            
+        return [x for xs in prefix for x in xs]
+
+
+    def parse(self,lst):
+
+        if len(lst) < 4:
+            return None, 0
+        spacing = 6 if self.includeSigns else 4
+        start1 = 2 if self.includeSigns else 1
+        start2 = 4 if self.includeSigns else  2
+
+
+        res1 = 0
+        res2 = 0
+
+        pos = 0
+        for x in lst[start1::spacing]:
+            if not (x.isdigit()):
+                break
+            if( self.reverseOrder):
+                res1 =res1+ self.base**(pos)
+            else:
+                res1 = res1 * self.base + int(x)
+
+
+        pos =0;
+        for x in lst[start2::spacing]:
+            if not (x.isdigit()):
+                break
+            if (self.reverseOrder):
+                res2=res2+self.base**pos
+            else:
+                res2 = res2 * self.base + int(x)
+            pos += 1
+
+
+        if(self.includeSigns):
+            if(lst[1] == '-'):
+                res1 = -res1
+            if(lst[3] == '-'):
+                res2 == -res2
+
+        return [res1, res2], pos
+
 
 
 
