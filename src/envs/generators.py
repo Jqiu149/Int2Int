@@ -186,7 +186,7 @@ class addGeneratorStepsLogUniform(Sequence):
     def generate (self, rng, type2):
         inp = self.integer_loguniform_sequence(2, rng, type2)
         
-        carry = sumGetCarry(inp[0], inp[1])
+        carry = self.sumGetCarry(inp[0], inp[1])
         out = [inp[0]+inp[1] - carry, carry]
         return inp, out
 
