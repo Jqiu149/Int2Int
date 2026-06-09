@@ -208,7 +208,7 @@ def LagrangeReduce(v1,v2):
     norm1Squared = v1[0]**2 + v1[1]**2
     norm2Squared = v2[0]**2 + v2[1]**2
 
-    if(norm1Squared> norm2Squared):
+    if(norm1Squared<=norm2Squared):
         v1,v2 = v2,v1
         norm1Squared,norm2Squared = norm2Squared,norm1Squared
 

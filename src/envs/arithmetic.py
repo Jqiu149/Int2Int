@@ -147,7 +147,6 @@ class ArithmeticEnvironment(object):
             maxDigits = int(math.log10(params.maxint**2))+2
             self.output_encoder = encoders.PositionalIntsExp(maxDigits, params.base, reverse=True)
 
-
         if self.operation == "add":
             self.generator = generators.addGenerator(params, dims)
             self.input_encoder=encoders.NumberArray(params, 2, 'V', 1, 'pos_int_modified');
@@ -189,10 +188,8 @@ class ArithmeticEnvironment(object):
             self.output_encoder = encoders.PositionalIntsPaired(10, includeSigns = False, reverseOrder=True)
 
         if self.operation == "oneStepAddPad-rev":
-            print("hi??")
             self.generator = generators.addGeneratorStepsLogUniform(params,dims)
-            assert params.base == 10, "for add4 we need to be in base 10"
-    
+            assert params.base == 10, "for add4 we need to be in base 10" 
             self.input_encoder = encoders.PositionalIntsPairedPadded(self.max_len,10, includeSigns = False)
             self.output_encoder = encoders.PositionalIntsPairedPadded(self.max_len, 10, includeSigns = False, reverseOrder=True)
          
@@ -201,11 +198,7 @@ class ArithmeticEnvironment(object):
             self.generator=generators.linIndepR2Generator(params, dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
-
-
-
-
-
+    
        
     
         assert not self.export_pred or isinstance(self.output_encoder, (encoders.SymbolicInts, encoders.PositionalInts))
@@ -296,7 +289,7 @@ class ArithmeticEnvironment(object):
 
             return int( str(smallerNumDigits) + seperator  + str(biggerNumDigits))
         elif self.operation in ["oneStepAdd", "oneStepAddPad","oneStepAddPad-rev", "oneStepAdd-rev"]:
-            v = self.input_encoder.decode(yi) 
+            v = self.output_encoder.decode(yi) 
             return max( int(math.log10(v[0])), int(math.log10(v[1])))+1
         else:
             v = self.output_encoder.decode(yi)

@@ -320,6 +320,7 @@ class PositionalIntsPairedPadded(Encoder):
         s1 = "+" if inputs[0]>= 0 else "-" 
         s2= "+" if inputs[1]>= 0 else "-" 
 
+        #print("hii???")
 
         prefix = []
 
@@ -335,9 +336,13 @@ class PositionalIntsPairedPadded(Encoder):
                 w1 = w1 //self.base
                 w2 = w2 // self.base
                 currentLen+=6
-                
-            for i in range( int( (self.maxLen - currentLen )/ 6)):
+
+                #print("loop1")
+
+            for i in range( int( (self.maxLen -2 - currentLen )/ 6 )):
                 prefix.append(["(", s1, "0", s2, "0", ")"])
+
+                #print("loop2")
 
         else:
             if(w1 ==0 and w2 ==0):
@@ -349,9 +354,14 @@ class PositionalIntsPairedPadded(Encoder):
                 w1 = w1 //self.base
                 w2 = w2 // self.base
                 currentLen+=4
+
+                #print("loop3")
             
-            for i in range( int( (self.maxLen - currentLen )/ 4)):
-                prefix.append(["(", s1, "0", s2, "0", ")"])
+            for i in range( int( (self.maxLen-2- currentLen )/ 4)):
+                prefix.append(["(", "0", "0", ")"])
+
+                #print("loop4", i, int( (self.maxLen-currentLen)/4))
+
 
         if (not self.reverseOrder):
             prefix.reverse()
@@ -360,6 +370,7 @@ class PositionalIntsPairedPadded(Encoder):
 
 
     def parse(self,lst):
+
 
         if len(lst) < 4:
             return None, 0
