@@ -160,33 +160,32 @@ class addGeneratorLogUniform(Sequence):
         out = inp[0]+inp[1]
         return inp, out
 
+#base 10 specifically
+def sumGetCarry(n1, n2):
+ 
+    carrySum = 0
+    exp = 1
+    while ( n1>0 and n2>0):
+        d1 = n1 % 10
+        d2 = n2 % 10
+
+        if(d1+d2 >= 10):
+            carrySum = carrySum + 10**exp
+
+        n1 = n1 // 10
+        n2 = n2 // 10
+        exp = exp+1
+
+    return carrySum
+
 
 # i think need to assume the base is specific thing cus.... we don't get acess to it here and the carries depend on them..
 class addGeneratorStepsLogUniform(Sequence):
-
-    #base 10 specifically
-    def sumGetCarry(n1, n2):
-     
-        carrySum = 0
-        exp = 1
-        while ( n1>0 and n2>0):
-            d1 = n1 % 10
-            d2 = n2 % 10
-
-            if(d1+d2 >= 10):
-                carrySum = carrySum + 10**exp
-
-            n1 = n1 // 10
-            n2 = n2 // 10
-            exp = exp+1
-
-        return carrySum
-
-
+    
     def generate (self, rng, type2):
         inp = self.integer_loguniform_sequence(2, rng, type2)
         
-        carry = self.sumGetCarry(inp[0], inp[1])
+        carry = sumGetCarry(inp[0], inp[1])
         out = [inp[0]+inp[1] - carry, carry]
         return inp, out
 

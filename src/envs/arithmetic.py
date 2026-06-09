@@ -284,7 +284,7 @@ class ArithmeticEnvironment(object):
             biggerNumDigits = int(math.log10(bigger)) +1
 
             return int( str(smallerNumDigits) + seperator  + str(biggerNumDigits))
-        elif self.operation in ["add4", "add4-rev"]:
+        elif self.operation in ["oneStepAdd", "oneStepAdd-rev"]:
             v = self.input_encoder.decode(xi) 
             return max( int(math.log10(v[0])), int(math.log10(v[1])))+1
         else:
