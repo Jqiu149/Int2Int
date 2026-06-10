@@ -195,12 +195,12 @@ class ArithmeticEnvironment(object):
          
             
         if self.operation == "lattice":
+            #choosing right now to interpret input and ouput as length 4 array of integers
+            #might be helpful to have a seperator of some sort but idk
             self.generator=generators.linIndepR2Generator(params, dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
-    
-       
-    
+      
         assert not self.export_pred or isinstance(self.output_encoder, (encoders.SymbolicInts, encoders.PositionalInts))
 
        
