@@ -206,8 +206,8 @@ def LagrangeReduce(v1,v2):
     v1 = np.array(v1)
     v2 = np.array(v2)
 
-    norm1Squared = v1[0]**2 + v1[1]**2
-    norm2Squared = v2[0]**2 + v2[1]**2
+    norm1Squared = np.dot(v1, v1) 
+    norm2Squared = np.dot(v2,v2) 
 
     done = False
     while(not done):
@@ -215,9 +215,9 @@ def LagrangeReduce(v1,v2):
             v1,v2 = v2,v1
             norm1Squared,norm2Squared = norm2Squared,norm1Squared
 
-        u = math.floor( (np.dot(v1,v2))/ norm1Squared)
+        u = round( (np.dot(v1,v2))/ norm1Squared)
         v2 = v2-u*v1
-        norm2Squared= v2[0]**2 + v2[1]**2
+        norm2Squared= np.dot(v2,v2) 
 
         if(norm1Squared<= norm2Squared):
             done = True
