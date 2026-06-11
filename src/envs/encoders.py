@@ -257,6 +257,7 @@ class PositionalIntsPaired(Encoder):
 
     def parse(self,lst):
 
+
         if len(lst) < 4:
             return None, 0
         spacing = 6 if self.includeSigns else 4
@@ -267,25 +268,22 @@ class PositionalIntsPaired(Encoder):
         res1 = 0
         res2 = 0
 
-        pos = 0
-        for x in lst[start1::spacing]:
+        for pos, x in enumerate(lst[start1::spacing]):
             if not (x.isdigit()):
-                break
+                return 0
             if( self.reverseOrder):
-                res1 =res1+ self.base**(pos)
+                res1+= int(x)* self.base**(pos)
             else:
                 res1 = res1 * self.base + int(x)
 
 
-        pos =0;
-        for x in lst[start2::spacing]:
+        for pos, x in enumerate(lst[start2::spacing]):
             if not (x.isdigit()):
-                break
+                return 0
             if (self.reverseOrder):
-                res2=res2+self.base**pos
+                res2=res2+ int(x)*self.base**pos
             else:
                 res2 = res2 * self.base + int(x)
-            pos += 1
 
 
         if(self.includeSigns):
@@ -294,7 +292,8 @@ class PositionalIntsPaired(Encoder):
             if(lst[3] == '-'):
                 res2 == -res2
 
-        return [res1, res2], pos
+        return [res1, res2], 1
+
 
 class PositionalIntsPairedPadded(Encoder):
     """
@@ -384,7 +383,7 @@ class PositionalIntsPairedPadded(Encoder):
 
         for pos, x in enumerate(lst[start1::spacing]):
             if not (x.isdigit()):
-                break
+                return 0
             if( self.reverseOrder):
                 res1+= int(x)* self.base**(pos)
             else:
@@ -393,7 +392,7 @@ class PositionalIntsPairedPadded(Encoder):
 
         for pos, x in enumerate(lst[start2::spacing]):
             if not (x.isdigit()):
-                break
+                return 0
             if (self.reverseOrder):
                 res2=res2+ int(x)*self.base**pos
             else:
