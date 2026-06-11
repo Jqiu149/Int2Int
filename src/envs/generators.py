@@ -225,10 +225,36 @@ def LagrangeReduce(v1,v2):
     return v1.tolist()+ v2.tolist()
 
 
+#take in 2 LINEARLY INDEPENDENT vectors in R^2 (2 lists of length 2)
+def LagrangeReduceOneStep(v1,v2):
+    assert np.shape(v1) == (2,), f"LagrangeReduce expects v1 to be shape (2,0), v1 is ${v1} and v2 is ${v2}"
+    assert np.shape(v2) == (2,), f"LagrangeReduce expects v1 to be shape (2,0), v1 is ${v1} and v2 is ${v2}"
+    assert pairVectorsR2LinearIndep(v1,v2), f"LagrangeReduce expects v1 and v2 to be linearly independent. v1 is ${v1} and v2 is ${v2}"
+
+    # just for concenience for element wise operation notation... probably easier ways to do this
+    v1 = np.array(v1)
+    v2 = np.array(v2)
+
+    norm1Squared = np.dot(v1, v1) 
+    norm2Squared = np.dot(v2,v2) 
+
+    if(norm1Squared> norm2Squared):
+        v1,v2 = v2,v1
+        norm1Squared,norm2Squared = norm2Squared,norm1Squared
+
+    u = round( (np.dot(v1,v2))/ norm1Squared)
+    v2 = v2-u*v1
+    norm2Squared= np.dot(v2,v2) 
+
+
+    return v1.tolist()+ v2.tolist()
+
+
+
 
 #note we're only doing vectors in Z^2. values are based on min and maxint. 
 #if we want, we can later try to think about how to get more genreal things but... :/
-class linIndepR2Generator(Sequence):
+class latticeGenerator(Sequence):
     def generate(self, rng, type2): 
         inp = self.integer_sequence(4,rng,type2)
         if inp[0] ==0 and inp[1] ==0 :
@@ -246,5 +272,27 @@ class linIndepR2Generator(Sequence):
                 break
             
         out = LagrangeReduce(inp[0:2], inp[2:4])
+
+        return inp, out
+
+
+class latticeOneStepGenerator(Sequence):
+    def generate(self, rng, type2): 
+        inp = self.integer_sequence(4,rng,type2)
+        if inp[0] ==0 and inp[1] ==0 :
+            inp[0]=1
+        if inp[2] ==0 and inp[3] ==0: 
+            inp[3] =1
+
+        counter = 1
+        while( not pairVectorsR2LinearIndep(inp[0:2], inp[2:4])):
+            inp[2:4] = self.integer_sequence(2,rng,type2)
+            counter+=1
+
+            if(counter >100):
+                raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}, minInt is ${self.minit}, maxInt is ${self.maxint}")
+                break
+            
+        out = LagrangeReduceOneStep(inp[0:2], inp[2:4])
 
         return inp, out
