@@ -314,7 +314,7 @@ class PositionalIntsPairedPadded(Encoder):
 
     def encode(self, inputs): 
         assert np.shape(inputs) == (2,), "inputs is expected to be an np array of length 2)"
-
+        
         w1 = abs( inputs[0]);
         w2 = abs(inputs[1]);
         s1 = "+" if inputs[0]>= 0 else "-" 
@@ -382,25 +382,22 @@ class PositionalIntsPairedPadded(Encoder):
         res1 = 0
         res2 = 0
 
-        pos = 0
-        for x in lst[start1::spacing]:
+        for pos, x in enumerate(lst[start1::spacing]):
             if not (x.isdigit()):
                 break
             if( self.reverseOrder):
-                res1 =res1+ self.base**(pos)
+                res1+= int(x)* self.base**(pos)
             else:
                 res1 = res1 * self.base + int(x)
 
 
-        pos =0;
-        for x in lst[start2::spacing]:
+        for pos, x in enumerate(lst[start2::spacing]):
             if not (x.isdigit()):
                 break
             if (self.reverseOrder):
-                res2=res2+self.base**pos
+                res2=res2+ int(x)*self.base**pos
             else:
                 res2 = res2 * self.base + int(x)
-            pos += 1
 
 
         if(self.includeSigns):
@@ -409,7 +406,7 @@ class PositionalIntsPairedPadded(Encoder):
             if(lst[3] == '-'):
                 res2 == -res2
 
-        return [res1, res2], pos
+        return [res1, res2], 1
 
 
 

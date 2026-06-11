@@ -296,7 +296,7 @@ class ArithmeticEnvironment(object):
 
             return int( str(smallerNumDigits) + seperator  + str(biggerNumDigits))
         elif self.operation in ["oneStepAdd", "oneStepAddPad","oneStepAddPad-rev", "oneStepAdd-rev"]:
-            v = self.output_encoder.decode(yi) 
+            v = self.input_encoder.decode(xi) 
             return max( int(math.log10(v[0])), int(math.log10(v[1])))+1
         else:
             v = self.output_encoder.decode(yi)
