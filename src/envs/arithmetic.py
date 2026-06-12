@@ -187,11 +187,12 @@ class ArithmeticEnvironment(object):
             self.input_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
             self.output_encoder = encoders.PositionalIntsPaired(10, includeSigns = False, reverseOrder=True)
 
+        #RN we're just passing in the first paramters to encoders being how much to pad output by...
         if self.operation == "oneStepAddPad-rev":
             self.generator = generators.addGeneratorStepsLogUniform(params,dims)
             assert params.base == 10, "for add4 we need to be in base 10" 
-            self.input_encoder = encoders.PositionalIntsPairedPadded(self.max_len,10, includeSigns = False)
-            self.output_encoder = encoders.PositionalIntsPairedPadded(self.max_len, 10, includeSigns = False, reverseOrder=True)
+            self.input_encoder = encoders.PositionalIntsPairedPadded(3,10, includeSigns = False)
+            self.output_encoder = encoders.PositionalIntsPairedPadded(3, 10, includeSigns = False, reverseOrder=True)
          
             
         if self.operation == "lattice":

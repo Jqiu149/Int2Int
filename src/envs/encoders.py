@@ -206,6 +206,8 @@ class PositionalIntsExp(Encoder):
         if pos < 2: return None, pos
         return -res if lst[0] == '-' else res, pos
 
+
+
 class PositionalIntsPaired(Encoder):
     """
     expected input: list of 2 integers x1x2...xn and y1...ynwith signs s1 and s2 
@@ -293,9 +295,9 @@ class PositionalIntsPaired(Encoder):
                 res2 == -res2
 
         return [res1, res2], 1
+    
 
-
-class PositionalIntsPairedPadded(Encoder):
+class PositionalIntsPairedPadded(PositionalIntsPaired):
     """
     expected input: list of 2 integers x1x2...xn and y1...ynwith signs s1 and s2 
         ... note some of xi yi might be zero even if leading with them
@@ -303,111 +305,25 @@ class PositionalIntsPairedPadded(Encoder):
         or same thing withotu the s1, s2 if includeSigns is false
     """
 
-    def __init__(self, maxLen, base=10, includeSigns = True, reverseOrder = False):
-        super().__init__()
-        self.base = base
-        self.maxLen = maxLen
-        self.symbols = ['+', '-'] + [str(i) for i in range(self.base)]
-        self.includeSigns = includeSigns
-        self.reverseOrder = reverseOrder
+    def __init__(self, paddingLength, base=10, includeSigns = True, reverseOrder = False):
+        super().__init__(base, includeSigns, reverseOrder)
+        self.paddingLength = paddingLength 
 
     def encode(self, inputs): 
-        assert np.shape(inputs) == (2,), "inputs is expected to be an np array of length 2)"
-        
-        w1 = abs( inputs[0]);
-        w2 = abs(inputs[1]);
-        s1 = "+" if inputs[0]>= 0 else "-" 
-        s2= "+" if inputs[1]>= 0 else "-" 
-
-        #print("hii???")
-
-        prefix = []
-
-        currentLen= 0
-
+        res = super().encode(inputs)
+ 
         if self.includeSigns:
-            if(w1 ==0 and w2 ==0):
-                prefix.append(["(", "+", "0", "+", "0", ")"])
-                currentLen=  6
-            
-            while (w1 > 0 or w2 >0):
-                prefix.append([ "(", s1, str(w1 % self.base), s2,str(w2 % self.base), ")"] )
-                w1 = w1 //self.base
-                w2 = w2 // self.base
-                currentLen+=6
-
-                #print("loop1")
-
-            for i in range( int( (self.maxLen -2 - currentLen )/ 6 )):
-                prefix.append(["(", s1, "0", s2, "0", ")"])
-
-                #print("loop2")
-
+            padding =  "(+0+0)"
         else:
-            if(w1 ==0 and w2 ==0):
-                prefix.append( ["(", "0","0", ")"])
-                currentLen= 4
-            
-            while (w1 > 0 or w2 >0):
-                prefix.append([ "(", str(w1 % self.base), str(w2 % self.base), ")"])
-                w1 = w1 //self.base
-                w2 = w2 // self.base
-                currentLen+=4
+            padding = "(00)"
 
-                #print("loop3")
-            
-            for i in range( int( (self.maxLen-2- currentLen )/ 4)):
-                prefix.append(["(", "0", "0", ")"])
+        
+        if self.reverseOrder: 
+            res += padding*self.paddingLength
+        else: 
+            res =padding*self.paddingLength + res
 
-                #print("loop4", i, int( (self.maxLen-currentLen)/4))
-
-
-        if (not self.reverseOrder):
-            prefix.reverse()
-            
-        return [x for xs in prefix for x in xs]
-
-
-    def parse(self,lst):
-
-
-        if len(lst) < 4:
-            return None, 0
-        spacing = 6 if self.includeSigns else 4
-        start1 = 2 if self.includeSigns else 1
-        start2 = 4 if self.includeSigns else  2
-
-
-        res1 = 0
-        res2 = 0
-
-        for pos, x in enumerate(lst[start1::spacing]):
-            if not (x.isdigit()):
-                return 0
-            if( self.reverseOrder):
-                res1+= int(x)* self.base**(pos)
-            else:
-                res1 = res1 * self.base + int(x)
-
-
-        for pos, x in enumerate(lst[start2::spacing]):
-            if not (x.isdigit()):
-                return 0
-            if (self.reverseOrder):
-                res2=res2+ int(x)*self.base**pos
-            else:
-                res2 = res2 * self.base + int(x)
-
-
-        if(self.includeSigns):
-            if(lst[1] == '-'):
-                res1 = -res1
-            if(lst[3] == '-'):
-                res2 == -res2
-
-        return [res1, res2], 1
-
-
+        return res
 
 
 class NumberArray(Encoder):
