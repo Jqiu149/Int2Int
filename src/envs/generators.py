@@ -274,7 +274,7 @@ class latticeGenerator(Sequence):
 
         counter = 1
         while( not pairVectorsR2LinearIndep(inp[0:2], inp[2:4])):
-            inp[2:4] = self.integer_sequence(2,rng,type2)
+            inp[2:4] = self.integer_sequence(2,rng)
             counter+=1
 
             if(counter >100):
