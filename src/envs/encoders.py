@@ -321,7 +321,7 @@ class PositionalIntsPairedPadded(PositionalIntsPaired):
         if self.reverseOrder: 
             res += padding*self.paddingLength
         else: 
-            res =padding*self.paddingLength + res
+            res =list(padding*self.paddingLength)+ res
 
         return res
 
