@@ -197,7 +197,7 @@ def pairVectorsR2LinearIndep(v1,v2):
 
 #take in 2 LINEARLY INDEPENDENT vectors in R^2 (2 lists of length 2)
 # output [u1, u2] (as a sequence of 4 vectors [u11, u12, u21,u22]) where ||u1||<=||u2|| where hopefully ||u1|| is minimal in lattice?
-def LagrangeReduce(v1,v2):
+def LagrangeReduce(v1,v2, returnStepCount= False):
     assert np.shape(v1) == (2,), f"LagrangeReduce expects v1 to be shape (2,0), v1 is ${v1} and v2 is ${v2}"
     assert np.shape(v2) == (2,), f"LagrangeReduce expects v1 to be shape (2,0), v1 is ${v1} and v2 is ${v2}"
     assert pairVectorsR2LinearIndep(v1,v2), f"LagrangeReduce expects v1 and v2 to be linearly independent. v1 is ${v1} and v2 is ${v2}"
@@ -210,7 +210,10 @@ def LagrangeReduce(v1,v2):
     norm2Squared = np.dot(v2,v2) 
 
     done = False
+    stepCount = 0
     while(not done):
+        stepCount+=1
+
         if(norm1Squared> norm2Squared):
             v1,v2 = v2,v1
             norm1Squared,norm2Squared = norm2Squared,norm1Squared
@@ -221,6 +224,9 @@ def LagrangeReduce(v1,v2):
 
         if(norm1Squared<= norm2Squared):
             done = True
+
+    if returnStepCount: 
+        return  stepCount
 
     return v1.tolist()+ v2.tolist()
 
@@ -255,8 +261,12 @@ def LagrangeReduceOneStep(v1,v2):
 #note we're only doing vectors in Z^2. values are based on min and maxint. 
 #if we want, we can later try to think about how to get more genreal things but... :/
 class latticeGenerator(Sequence):
-    def generate(self, rng, type2): 
-        inp = self.integer_sequence(4,rng,type2)
+
+    #creates 2 vectors that are linearly indepdnet in R. 
+    #not gauranteed ig.... we basically jsut try 100 times and if it doesn't wokr then we give up but i think it's unlikely for it to not work out...
+    #other option was to figure out what entry to add 1 to..... eh
+    def TwoLinearlyIndependentVectors(self,rng):
+        inp = self.integer_sequence(4,rng)
         if inp[0] ==0 and inp[1] ==0 :
             inp[0]=1
         if inp[2] ==0 and inp[3] ==0: 
@@ -269,30 +279,21 @@ class latticeGenerator(Sequence):
 
             if(counter >100):
                 raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}, minInt is ${self.minit}, maxInt is ${self.maxint}")
-                break
-            
+                return None 
+        return inp
+
+
+
+    def generate(self, rng, type2):  
+        inp = self.TwoLinearlyIndependentVectors(rng)
         out = LagrangeReduce(inp[0:2], inp[2:4])
 
         return inp, out
 
 
-class latticeOneStepGenerator(Sequence):
+class latticeOneStepGenerator(latticeGenerator):
     def generate(self, rng, type2): 
-        inp = self.integer_sequence(4,rng,type2)
-        if inp[0] ==0 and inp[1] ==0 :
-            inp[0]=1
-        if inp[2] ==0 and inp[3] ==0: 
-            inp[3] =1
-
-        counter = 1
-        while( not pairVectorsR2LinearIndep(inp[0:2], inp[2:4])):
-            inp[2:4] = self.integer_sequence(2,rng,type2)
-            counter+=1
-
-            if(counter >100):
-                raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}, minInt is ${self.minit}, maxInt is ${self.maxint}")
-                break
-            
+        inp = self.TwoLinearlyIndependentVectors(rng)
         out = LagrangeReduceOneStep(inp[0:2], inp[2:4])
 
         return inp, out

@@ -298,6 +298,9 @@ class ArithmeticEnvironment(object):
         elif self.operation in ["oneStepAdd", "oneStepAddPad","oneStepAddPad-rev", "oneStepAdd-rev"]:
             v = self.input_encoder.decode(xi) 
             return max( int(math.log10(v[0])), int(math.log10(v[1])))+1
+        elif self.operation in ["lattice"]:
+            v = self.input_encoder.decode(xi)
+            return generators.LagrangeReduce(v[0:2],v[2:4], returnStepCount= True)
         else:
             v = self.output_encoder.decode(yi)
             assert v is not None
