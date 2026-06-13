@@ -19,7 +19,7 @@ from src.dataset import EnvDataset
 from ..utils import bool_flag
 
 
-SPECIAL_WORDS = ["<eos>", "<pad>", "<sep>", "(", ")"]
+SPECIAL_WORDS = ["<eos>", "<pad>", "<sep>", "(", ")", "e", "q", "x" ]
 SPECIAL_WORDS = SPECIAL_WORDS + [f"<SPECIAL_{i}>" for i in range(10)]
 
 logger = getLogger()
@@ -303,8 +303,6 @@ class ArithmeticEnvironment(object):
             v = self.input_encoder.decode(xi)
             return generators.LagrangeReduce(v[0:2],v[2:4], returnStepCount= True)
         else:
-            v = self.output_encoder.decode(yi)
-            assert v is not None
             return 0
 
     def check_prediction(self, src, tgt, hyp):
