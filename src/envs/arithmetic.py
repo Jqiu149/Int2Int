@@ -305,6 +305,8 @@ class ArithmeticEnvironment(object):
         elif self.operation in ["lattice"]:
             v = self.input_encoder.decode(xi)
             return generators.LagrangeReduce(v[0:2],v[2:4], returnStepCount= True)
+        elif self.operation in ["latticeOneStep"]:
+            return 0
         else:
             if self.output_encoder.decode(yi) is None:
                 return 0
