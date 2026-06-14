@@ -308,7 +308,11 @@ class ArithmeticEnvironment(object):
         elif self.operation in ["latticeOneStep"]:
             return 0
         else:
-            if self.output_encoder.decode(yi) is None:
+            v = self.output_encoder.decode(yi)
+            if v is None:
+                return 0
+
+            if v == 0:
                 return 0
 
             return int(math.log10(self.output_encoder.decode(yi)))+1
