@@ -19,7 +19,7 @@ from src.dataset import EnvDataset
 from ..utils import bool_flag
 
 
-SPECIAL_WORDS = ["<eos>", "<pad>", "<sep>", "(", ")", "e", "q", "x" ]
+SPECIAL_WORDS = ["<eos>", "<pad>", "<sep>", "(", ")" ]
 SPECIAL_WORDS = SPECIAL_WORDS + [f"<SPECIAL_{i}>" for i in range(10)]
 
 logger = getLogger()
@@ -108,6 +108,8 @@ class ArithmeticEnvironment(object):
             self.input_encoder = data_type_to_encoder(params, i)
             self.output_encoder = data_type_to_encoder(params, o)
         
+
+            SPECIAL_WORDS=SPECIAL_WORDS+ ["e", "q", "x"]
         self.generator = generators.Sequence(params, dims)
 
         if self.operation == "lcm":
