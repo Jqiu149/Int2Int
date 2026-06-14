@@ -303,7 +303,10 @@ class ArithmeticEnvironment(object):
             v = self.input_encoder.decode(xi)
             return generators.LagrangeReduce(v[0:2],v[2:4], returnStepCount= True)
         else:
-            return 0
+            if self.output_encoder.decode(yi) is None:
+                return 0
+
+            return int(math.log10(self.output_encoder.decode(yi)))+1
 
     def check_prediction(self, src, tgt, hyp):
         w = self.output_encoder.decode(hyp)
