@@ -109,7 +109,8 @@ class ArithmeticEnvironment(object):
             self.output_encoder = data_type_to_encoder(params, o)
         
 
-            SPECIAL_WORDS=SPECIAL_WORDS+ ["e", "q", "x"]
+            global SPECIAL_WORDS
+            SPECIAL_WORDS += ["e", "q", "x"]
         self.generator = generators.Sequence(params, dims)
 
         if self.operation == "lcm":
