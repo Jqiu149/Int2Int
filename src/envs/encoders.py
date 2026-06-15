@@ -305,23 +305,31 @@ class PositionalIntsPairedPadded(PositionalIntsPaired):
         or same thing withotu the s1, s2 if includeSigns is false
     """
 
-    def __init__(self, paddingLength, base=10, includeSigns = True, reverseOrder = False):
+    def __init__(self, totalDigits, base=10, includeSigns = True, reverseOrder = False):
         super().__init__(base, includeSigns, reverseOrder)
-        self.paddingLength = paddingLength 
+        self.totalDigits = totalDigits
 
     def encode(self, inputs): 
         res = super().encode(inputs)
  
         if self.includeSigns:
             padding =  "(+0+0)"
+            currentDigits = len(res)/6
+
         else:
             padding = "(00)"
+            currentDigits = len(res)/4
 
+        assert currentDigits.is_integer()
+        currentDigits = int(currentDigits)
+
+        paddingLength = self.totalDigits-currentDigits
+        assert paddingLength >= 0
         
         if self.reverseOrder: 
-            res += padding*self.paddingLength
+            res += padding*paddingLength
         else: 
-            res =list(padding*self.paddingLength)+ res
+            res =list(padding*paddingLength)+ res
 
         return res
 

@@ -232,7 +232,7 @@ def LagrangeReduce(v1,v2, returnStepCount= False):
 
 
 #take in 2 LINEARLY INDEPENDENT vectors in R^2 (2 lists of length 2)
-def LagrangeReduceOneStep(v1,v2):
+def LagrangeReduceOneStep(v1,v2, returnCodeClass=False):
     assert np.shape(v1) == (2,), f"LagrangeReduce expects v1 to be shape (2,0), v1 is ${v1} and v2 is ${v2}"
     assert np.shape(v2) == (2,), f"LagrangeReduce expects v1 to be shape (2,0), v1 is ${v1} and v2 is ${v2}"
     assert pairVectorsR2LinearIndep(v1,v2), f"LagrangeReduce expects v1 and v2 to be linearly independent. v1 is ${v1} and v2 is ${v2}"
@@ -244,16 +244,26 @@ def LagrangeReduceOneStep(v1,v2):
     norm1Squared = np.dot(v1, v1) 
     norm2Squared = np.dot(v2,v2) 
 
+    codeClass = 0
     if(norm1Squared> norm2Squared):
         v1,v2 = v2,v1
         norm1Squared,norm2Squared = norm2Squared,norm1Squared
+        codeClass+= 20
+    else:
+        codeClass+=10
 
     u = round( (np.dot(v1,v2))/ norm1Squared)
-    v2 = v2-u*v1
-    norm2Squared= np.dot(v2,v2) 
+    v2Updated= v2-u*v1
 
+    if (v2Updated.tolist()== v2.tolist()):
+        codeClass+=1
+    else:
+        codeClass+=2
 
-    return v1.tolist()+ v2.tolist()
+    if(returnCodeClass):
+        return codeClass
+
+    return v1.tolist()+ v2Updated.tolist()
 
 
 
