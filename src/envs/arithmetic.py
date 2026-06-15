@@ -189,14 +189,21 @@ class ArithmeticEnvironment(object):
     
             self.input_encoder = encoders.PositionalIntsPaired(10, includeSigns = False)
             self.output_encoder = encoders.PositionalIntsPaired(10, includeSigns = False, reverseOrder=True)
+        if self.operation == "oneStepAdd-AddedSpaces-rev":
+            self.generator = generators.addGeneratorStepsLogUniform(params,dims)
+
+            assert params.base == 10, "for add4 we need to be in base 10"
+    
+            self.input_encoder = encoders.PositionalIntsPairedAddedSpaces(10, includeSigns = False)
+            self.output_encoder = encoders.PositionalIntsPaired(10, includeSigns = False, reverseOrder=True)
 
         #RN we're just passing in the first paramters to encoders being number of digits we want everything ot be (should be higher than the number of digit things we're generating...)
         if self.operation == "oneStepAddInpOutPad-rev":
+
             self.generator = generators.addGeneratorStepsLogUniform(params,dims)
             assert params.base == 10, "for add4 we need to be in base 10" 
 
-            maxGeneratedDigits= int(math.log10(self.maxint)+1) 
-            maxLength = maxGeneratedDigits + 1
+            maxLength = 7 #ig we're just setting this manually :///
             self.input_encoder = encoders.PositionalIntsPairedPadded(maxLength,10, includeSigns = False)
             self.output_encoder = encoders.PositionalIntsPairedPadded(maxLength, 10, includeSigns = False, reverseOrder=True)
          
@@ -302,7 +309,7 @@ class ArithmeticEnvironment(object):
             biggerNumDigits = int(math.log10(bigger)) +1
 
             return int( str(smallerNumDigits) + seperator  + str(biggerNumDigits))
-        elif self.operation in ["oneStepAdd", "oneStepAddPad","oneStepAddInpOutPad-rev", "oneStepAdd-rev"]:
+        elif self.operation in ["oneStepAdd", "oneStepAddPad","oneStepAddInpOutPad-rev", "oneStepAdd-rev","oneStepAdd-AddedSpaces-rev" ]:
             v = self.input_encoder.decode(xi) 
             return max( int(math.log10(v[0])), int(math.log10(v[1])))+1
         elif self.operation in ["lattice"]:

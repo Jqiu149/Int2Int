@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 import numpy as np
 import math
+import random 
+
 class Encoder(ABC):
     """
     Base class for encoders, encodes and decodes matrices
@@ -272,7 +274,7 @@ class PositionalIntsPaired(Encoder):
 
         for pos, x in enumerate(lst[start1::spacing]):
             if not (x.isdigit()):
-                return 0
+                return lst,0
             if( self.reverseOrder):
                 res1+= int(x)* self.base**(pos)
             else:
@@ -281,7 +283,7 @@ class PositionalIntsPaired(Encoder):
 
         for pos, x in enumerate(lst[start2::spacing]):
             if not (x.isdigit()):
-                return 0
+                return lst, 0
             if (self.reverseOrder):
                 res2=res2+ int(x)*self.base**pos
             else:
@@ -295,7 +297,32 @@ class PositionalIntsPaired(Encoder):
                 res2 == -res2
 
         return [res1, res2], 1
-    
+
+class PositionalIntsPairedAddedSpaces(PositionalIntsPaired):
+    def __init__(self, base=10, includeSigns = True, reverseOrder = False):
+        super().__init__(base, includeSigns, reverseOrder)
+        self.symbols.append(" ")
+
+    def encode(self, inputs):
+        originalRes = super().encode(inputs)
+        
+        digitRepLength = 6 if self.includeSigns else 4
+        numDigits = len(originalRes)/digitRepLength
+
+        assert numDigits.is_integer(), f"originalRes is ${originalRes} and digitRepLength is ${digitRepLength}"
+        numDigits = int(numDigits)
+        
+        res = []
+        for i in range(numDigits-1):
+            res+=originalRes[i*digitRepLength:i*digitRepLength+digitRepLength]
+            randomSpaces = [" "] * random.randrange(0,7)
+            res+=randomSpaces
+
+        res+=originalRes[(numDigits-1)*digitRepLength:(numDigits)*digitRepLength]
+        
+        return res
+    def parse(self, lst):
+        return super().parse([x  for x in lst if x!= " "])
 
 class PositionalIntsPairedPadded(PositionalIntsPaired):
     """
