@@ -220,7 +220,10 @@ class ArithmeticEnvironment(object):
             self.generator=generators.latticeOneStepGenerator(params, dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
-      
+        if self.operation == "max": 
+            self.generator = generators.maxGenerator(params, dims)
+            self.input_encoder=encoders.NumberArray(params,2, 'V', 1, 'pos_int')
+            self.output_encoder = encoders.PositionalInts(params.base)
 
         assert not self.export_pred or isinstance(self.output_encoder, (encoders.SymbolicInts, encoders.PositionalInts))
 
