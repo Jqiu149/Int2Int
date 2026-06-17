@@ -3,6 +3,7 @@ import numpy as np
 import math
 import random 
 
+
 class Encoder(ABC):
     """
     Base class for encoders, encodes and decodes matrices
@@ -74,6 +75,26 @@ class PositionalInts(Encoder):
             pos += 1
         if pos < 2: return None, pos
         return -res if lst[0] == '-' else res, pos
+
+
+
+def insertRandomSpaces(inp, insertPeriod, minSpaces=0, maxSpaces=10):
+    assert type(inp) == list
+    assert type(minSpaces) == int and type(maxSpaces) ==int and type(insertPeriod) == int 
+    res = []
+    numInserts = len(inp)/insertPeriod
+    #b/c we don't want to insert at the end i guess
+    numInserts = int(numInserts-1) if numInserts.is_integer() else int(numInserts)
+
+    
+    for i in range(numInserts):
+        res+=inp[i*insertPeriod:i*insertPeriod+insertPeriod]
+        randomSpaces = [" "] * random.randrange(minSpaces, maxSpaces)
+        res+=randomSpaces
+
+    res+=inp[(numInserts)* insertPeriod: ]
+ 
+    return res
 
 class PositionalIntsRev(Encoder):
     """
@@ -297,6 +318,8 @@ class PositionalIntsPaired(Encoder):
                 res2 == -res2
 
         return [res1, res2], 1
+   
+
 
 class PositionalIntsPairedAddedSpaces(PositionalIntsPaired):
     def __init__(self, base=10, includeSigns = True, reverseOrder = False):
@@ -309,18 +332,8 @@ class PositionalIntsPairedAddedSpaces(PositionalIntsPaired):
         digitRepLength = 6 if self.includeSigns else 4
         numDigits = len(originalRes)/digitRepLength
 
-        assert numDigits.is_integer(), f"originalRes is ${originalRes} and digitRepLength is ${digitRepLength}"
-        numDigits = int(numDigits)
-        
-        res = []
-        for i in range(numDigits-1):
-            res+=originalRes[i*digitRepLength:i*digitRepLength+digitRepLength]
-            randomSpaces = [" "] * random.randrange(0,7)
-            res+=randomSpaces
+        return insertRandomSpaces(originalRes, digitRepLength, 0, 7) 
 
-        res+=originalRes[(numDigits-1)*digitRepLength:(numDigits)*digitRepLength]
-        
-        return res
     def parse(self, lst):
         return super().parse([x  for x in lst if x!= " "])
 
@@ -410,3 +423,13 @@ class NumberArray(Encoder):
             h = h[pos:]
             val[...] = v      
         return m
+
+class randSpacesNumberArray(NumberArray):
+    def __init__(self, params, max_dim, dim_prefix, tensor_dim, code='pos_int'):
+        return super().__init__(params,max_dim,dim_prefix,tensor_dim,code
+    def encode(self, vector ):
+        return insertRandomSpaces(super().encode(vector), 1)
+    def decode(self,lst):
+        return super().decode([x for x in lst if x != " "])
+
+    `

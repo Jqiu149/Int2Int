@@ -224,6 +224,12 @@ class ArithmeticEnvironment(object):
             self.generator = generators.maxGenerator(params, dims)
             self.input_encoder=encoders.NumberArray(params,2, 'V', 1, 'pos_int')
             self.output_encoder = encoders.PositionalInts(params.base)
+        if self.operation == "maxRandSpaces": 
+            self.generator = generators.maxGenerator(params, dims)
+            self.input_encoder=encoders.NumberArray(params,2, 'V', 1, 'pos_int')
+            self.output_encoder = encoders.PositionalInts(params.base)
+
+
 
         assert not self.export_pred or isinstance(self.output_encoder, (encoders.SymbolicInts, encoders.PositionalInts))
 
@@ -312,7 +318,7 @@ class ArithmeticEnvironment(object):
             biggerNumDigits = int(math.log10(bigger)) +1
 
             return int( str(smallerNumDigits) + seperator  + str(biggerNumDigits))
-        elif self.operation in ["oneStepAdd", "oneStepAddPad","oneStepAddInpOutPad-rev", "oneStepAdd-rev","oneStepAdd-AddedSpaces-rev" ]:
+        elif self.operation in ["oneStepAdd", "oneStepAddPad","oneStepAddInpOutPad-rev", "oneStepAdd-rev","oneStepAdd-AddedSpaces-rev" , "max", "maxRandSpaces"]:
             v = self.input_encoder.decode(xi) 
             return max( int(math.log10(v[0])), int(math.log10(v[1])))+1
         elif self.operation in ["lattice"]:
