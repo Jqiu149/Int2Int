@@ -311,3 +311,48 @@ class latticeOneStepGenerator(latticeGenerator):
         out = LagrangeReduceOneStep(inp[0:2], inp[2:4])
 
         return inp, out
+
+
+class latticeGenerator2(Sequence):
+    def polarToCartesian(angle, magnitude): 
+            return [np.cos(angle)*magnitude, np.sin(angle)*magnitude]
+
+
+    def TwoLinearlyIndependentVectorsPolar(m,maxAngleDiff, rng):
+        m1,m2= integer_loguniform_sequnce(2, rng,max=m) #... pretty sure this makes it so magnitudes can't be less than 1. i think that's fine... but a thing to note ig. and yeah thes are integers which i think is fine
+        a1 = random.uniform(0, 2*math.pi)
+        a2 = a1+integer_loguniform_sequnce(1,rng, max = 10**5)[0]*(maxAngleDiff)/10**5# ... maybe should also do liek negative of thing idk like opposite direction, but close to pralle 
+        if random.uniform(0,1)> 0.5 : 
+            a2 += math.pi
+
+        v1 = [int(x) for x in polarToCartesian(a1, m1)]
+        v2 = [int(x) for x in polarToCartesian(a2, m2)]
+
+        counter = 0
+        while( not pairVectorsR2LinearIndep(v1, v2)):
+            v2 = [int(x) for x in polarToCartesian(a2, m2)]
+            counter+=1
+
+            if(counter >100):
+                raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}, minInt is ${self.minit}, maxInt is ${self.maxint}")
+                return None
+
+        return [v1, v2]
+
+    def generate(self, rng, type2):  
+        if random.uniform(0,1) >= 0.5: 
+            inp = TwoLinearlyIndependentVectorsPolar(self.maxint, 10**-1)
+        else:
+            inp = self.TwoLinearlyIndependentVectors(rng)
+
+        out = LagrangeReduce(inp[0:2], inp[2:4])
+
+        return inp, out
+
+
+class latticeOneStepGenerator(latticeGenerator):
+    def generate(self, rng, type2): 
+        inp = self.TwoLinearlyIndependentVectors(rng)
+        out = LagrangeReduceOneStep(inp[0:2], inp[2:4])
+
+        return inp, out
