@@ -317,26 +317,27 @@ class latticeOneStepGenerator(latticeGenerator):
 
 class latticeGenerator2(latticeGenerator):
     def polarToCartesian(self, angle, magnitude): 
-            return [np.cos(angle)*magnitude, np.sin(angle)*magnitude]
+        return [np.cos(angle)*magnitude, np.sin(angle)*magnitude]
 
+    def logUniformly(self,maxint,rng):
+      return  10** math.log10(maxint)*rng.rand()
 
     def TwoLinearlyIndependentVectorsPolar(self, m,maxAngleDiff, rng):
-        m1,m2= self.integer_loguniform_sequence(2, rng,max=m) #... pretty sure this makes it so magnitudes can't be less than 1. i think that's fine... but a thing to note ig. and yeah thes are integers which i think is fine
+        #m1,m2= self.integer_loguniform_sequence(2, rng,max=m) #... pretty sure this makes it so magnitudes can't be less than 1. i think that's fine... but a thing to note ig. and yeah thes are integers which i think is fine
+        m1 = self.logUniformly(m,rng)
         a1 = random.uniform(0, 2*math.pi)
-        a2 = a1+self.integer_loguniform_sequence(1,rng, max = 10**5)[0]*(maxAngleDiff)/10**5# ... maybe should also do liek negative of thing idk like opposite direction, but close to pralle 
-        if random.uniform(0,1)> 0.5 : 
-            a2 += math.pi
+        #a2 = a1+self.integer_loguniform_sequence(1,rng, max =maxAngleDiff)[0]# ... maybe should also do liek negative of thing idk like opposite direction, but close to pralle 
 
         v1 = [int(x) for x in self.polarToCartesian(a1, m1)]
-        v2 = [int(x) for x in self.polarToCartesian(a2, m2)]
 
         if(v1 == [0,0]):
             v1[0] = 1
 
         counter = 0
+        v2 = [0,0]
         while( not pairVectorsR2LinearIndep(v1, v2)):
-            m2 = self.integer_loguniform_sequence(1,rng,max=m)[0] 
-            a2 = a1+self.integer_loguniform_sequence(1,rng, max = 10**5)[0]*(maxAngleDiff)/10**5# ... maybe should also do liek negative of thing idk like opposite direction, but close to pralle 
+            m2 = self.logUniformly(m,rng)
+            a2 = a1+self.logUniformly(maxAngleDiff,rng)
             if random.uniform(0,1)> 0.5 : 
                 a2 += math.pi
 
@@ -351,7 +352,7 @@ class latticeGenerator2(latticeGenerator):
 
     def generate(self, rng, type2):  
         if random.uniform(0,1) >= 0.5: 
-            inp = self.TwoLinearlyIndependentVectorsPolar(self.maxint, math.pi/4, rng)
+            inp = self.TwoLinearlyIndependentVectorsPolar(self.maxint, math.pi/15, rng)
         else:
             inp = self.TwoLinearlyIndependentVectors(rng)
 
