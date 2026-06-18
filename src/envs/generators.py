@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import math
 from logging import getLogger
+import random
 
 logger = getLogger()
 
@@ -31,6 +32,7 @@ class Sequence(Generator):
         self.modulus = params.modulus
 
     # integers from 1 to maxint, log uniform distribution
+
     def integer_loguniform_sequence(self, len, rng, type=None, max=None):
         maxint = self.maxint if max is None else max
         lgs = math.log10(maxint)*rng.rand(len)
@@ -313,35 +315,43 @@ class latticeOneStepGenerator(latticeGenerator):
         return inp, out
 
 
-class latticeGenerator2(Sequence):
-    def polarToCartesian(angle, magnitude): 
+class latticeGenerator2(latticeGenerator):
+    def polarToCartesian(self, angle, magnitude): 
             return [np.cos(angle)*magnitude, np.sin(angle)*magnitude]
 
 
-    def TwoLinearlyIndependentVectorsPolar(m,maxAngleDiff, rng):
-        m1,m2= integer_loguniform_sequnce(2, rng,max=m) #... pretty sure this makes it so magnitudes can't be less than 1. i think that's fine... but a thing to note ig. and yeah thes are integers which i think is fine
+    def TwoLinearlyIndependentVectorsPolar(self, m,maxAngleDiff, rng):
+        m1,m2= self.integer_loguniform_sequence(2, rng,max=m) #... pretty sure this makes it so magnitudes can't be less than 1. i think that's fine... but a thing to note ig. and yeah thes are integers which i think is fine
         a1 = random.uniform(0, 2*math.pi)
-        a2 = a1+integer_loguniform_sequnce(1,rng, max = 10**5)[0]*(maxAngleDiff)/10**5# ... maybe should also do liek negative of thing idk like opposite direction, but close to pralle 
+        a2 = a1+self.integer_loguniform_sequence(1,rng, max = 10**5)[0]*(maxAngleDiff)/10**5# ... maybe should also do liek negative of thing idk like opposite direction, but close to pralle 
         if random.uniform(0,1)> 0.5 : 
             a2 += math.pi
 
-        v1 = [int(x) for x in polarToCartesian(a1, m1)]
-        v2 = [int(x) for x in polarToCartesian(a2, m2)]
+        v1 = [int(x) for x in self.polarToCartesian(a1, m1)]
+        v2 = [int(x) for x in self.polarToCartesian(a2, m2)]
+
+        if(v1 == [0,0]):
+            v1[0] = 1
 
         counter = 0
         while( not pairVectorsR2LinearIndep(v1, v2)):
-            v2 = [int(x) for x in polarToCartesian(a2, m2)]
+            m2 = self.integer_loguniform_sequence(1,rng,max=m)[0] 
+            a2 = a1+self.integer_loguniform_sequence(1,rng, max = 10**5)[0]*(maxAngleDiff)/10**5# ... maybe should also do liek negative of thing idk like opposite direction, but close to pralle 
+            if random.uniform(0,1)> 0.5 : 
+                a2 += math.pi
+
+            v2 = [int(x) for x in self.polarToCartesian(a2, m2)]
             counter+=1
 
             if(counter >100):
-                raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}, minInt is ${self.minit}, maxInt is ${self.maxint}")
+                raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong,v1 is {v1}, v2 is {v2}")
                 return None
 
-        return [v1, v2]
+        return v1 + v2
 
     def generate(self, rng, type2):  
         if random.uniform(0,1) >= 0.5: 
-            inp = TwoLinearlyIndependentVectorsPolar(self.maxint, 10**-1)
+            inp = self.TwoLinearlyIndependentVectorsPolar(self.maxint, math.pi/4, rng)
         else:
             inp = self.TwoLinearlyIndependentVectors(rng)
 

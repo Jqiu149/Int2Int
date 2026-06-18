@@ -426,10 +426,10 @@ class NumberArray(Encoder):
 
 class randSpacesNumberArray(NumberArray):
     def __init__(self, params, max_dim, dim_prefix, tensor_dim, code='pos_int'):
-        return super().__init__(params,max_dim,dim_prefix,tensor_dim,code
+        return super().__init__(params,max_dim,dim_prefix,tensor_dim,code)
     def encode(self, vector ):
         return insertRandomSpaces(super().encode(vector), 1)
     def decode(self,lst):
         return super().decode([x for x in lst if x != " "])
 
-    `
+    
