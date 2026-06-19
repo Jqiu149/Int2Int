@@ -351,10 +351,9 @@ class latticeGenerator2(latticeGenerator):
         return v1 + v2
 
     def generate(self, rng, type2):  
-        if random.uniform(0,1) >= 0.5: 
-            inp = self.TwoLinearlyIndependentVectorsPolar(self.maxint, math.pi/15, rng)
-        else:
-            inp = self.TwoLinearlyIndependentVectors(rng)
+        expOptions = range(7)
+        exp = rng.choice(expOptions)
+        inp = self.TwoLinearlyIndependentVectorsPolar(self.maxint, math.pi/(2*10**exp), rng)
 
         out = LagrangeReduce(inp[0:2], inp[2:4])
 
