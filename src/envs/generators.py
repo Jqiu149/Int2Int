@@ -336,17 +336,17 @@ class latticeGenerator2(latticeGenerator):
         counter = 0
         v2 = [0,0]
         while( not pairVectorsR2LinearIndep(v1, v2)):
+            if(counter >1000):
+                raise Exception(f"okay we generated more than 1000 lineraly dependent vectors in a row, something is probably wrong,v1 is {v1}, v2 is {v2}")
+                return None
+
             m2 = self.logUniformly(m,rng)
-            a2 = a1+self.logUniformly(maxAngleDiff,rng)
+            a2 = a1+rng.uniform(0,maxAngleDiff)
             if random.uniform(0,1)> 0.5 : 
                 a2 += math.pi
 
             v2 = [int(x) for x in self.polarToCartesian(a2, m2)]
-            counter+=1
-
-            if(counter >100):
-                raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong,v1 is {v1}, v2 is {v2}")
-                return None
+            counter+=1  
 
         return v1 + v2
 
