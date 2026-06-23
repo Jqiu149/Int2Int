@@ -366,3 +366,13 @@ class latticeOneStepGenerator(latticeGenerator):
         out = LagrangeReduceOneStep(inp[0:2], inp[2:4])
 
         return inp, out
+
+class latticeOneStepGenerator2(latticeGenerator2):
+    def generate(self, rng, type2): 
+        expOptions = range(7)
+        exp = rng.choice(expOptions)
+        inp = self.TwoLinearlyIndependentVectorsPolar(self.maxint, math.pi/(2*10**exp), rng)
+
+        out = LagrangeReduceOneStep(inp[0:2], inp[2:4])
+
+        return inp, out

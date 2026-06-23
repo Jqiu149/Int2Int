@@ -224,6 +224,11 @@ class ArithmeticEnvironment(object):
             self.generator=generators.latticeGenerator2(params,dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
+        if self.operation == "latticeOneStep2":
+            self.generator=generators.latticeOneStepGenerator2(params,dims)
+            self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
+            self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
+
 
         if self.operation == "max": 
             self.generator = generators.maxGenerator(params, dims)
@@ -329,10 +334,10 @@ class ArithmeticEnvironment(object):
         elif self.operation in ["lattice", "lattice2"]:
             v = self.input_encoder.decode(xi)
             return generators.LagrangeReduce(v[0:2],v[2:4], returnStepCount= True)
-        elif self.operation in ["latticeOneStep"]:
+        elif self.operation in ["latticeOneStep", "latticeOneStep2"]:
+
             v = self.input_encoder.decode(xi)
             return generators.LagrangeReduceOneStep(v[0:2], v[2:4], returnCodeClass=True)
-            return 0
         else:
             v = self.output_encoder.decode(yi)
             if v is None:
