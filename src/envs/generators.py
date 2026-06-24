@@ -282,7 +282,7 @@ class latticeGenerator(Sequence):
     #not gauranteed ig.... we basically jsut try 100 times and if it doesn't wokr then we give up but i think it's unlikely for it to not work out...
     #other option was to figure out what entry to add 1 to..... eh
     def TwoLinearlyIndependentVectors(self,rng):
-        inp = self.integer_sequence(4,rng)
+        inp = self.integer_loguniform_sequence(4,rng)
         if inp[0] ==0 and inp[1] ==0 :
             inp[0]=1
         if inp[2] ==0 and inp[3] ==0: 
@@ -319,12 +319,12 @@ class latticeGenerator2(latticeGenerator):
     def polarToCartesian(self, angle, magnitude): 
         return [np.cos(angle)*magnitude, np.sin(angle)*magnitude]
 
-    def logUniformly(self,maxint,rng):
-      return  10** math.log10(maxint)*rng.rand()
+    def logUniformReal(self,maxint,rng):
+      return  10** (math.log10(maxint)*rng.rand())
 
     def TwoLinearlyIndependentVectorsPolar(self, m,maxAngleDiff, rng):
         #m1,m2= self.integer_loguniform_sequence(2, rng,max=m) #... pretty sure this makes it so magnitudes can't be less than 1. i think that's fine... but a thing to note ig. and yeah thes are integers which i think is fine
-        m1 = self.logUniformly(m,rng)
+        m1 = self.logUniformReal(m,rng)
         a1 = random.uniform(0, 2*math.pi)
         #a2 = a1+self.integer_loguniform_sequence(1,rng, max =maxAngleDiff)[0]# ... maybe should also do liek negative of thing idk like opposite direction, but close to pralle 
 
@@ -340,7 +340,7 @@ class latticeGenerator2(latticeGenerator):
                 raise Exception(f"okay we generated more than 1000 lineraly dependent vectors in a row, something is probably wrong,v1 is {v1}, v2 is {v2}")
                 return None
 
-            m2 = self.logUniformly(m,rng)
+            m2 = self.logUniformReal(m,rng)
             a2 = a1+rng.uniform(0,maxAngleDiff)
             if random.uniform(0,1)> 0.5 : 
                 a2 += math.pi
@@ -353,7 +353,7 @@ class latticeGenerator2(latticeGenerator):
     def generate(self, rng, type2):  
         expOptions = range(self.extra_int_arg1+1)
         exp = rng.choice(expOptions)
-        inp = self.TwoLinearlyIndependentVectorsPolar(self.maxint, math.pi/(2*10**exp), rng)
+        inp = self.TwoLinearlyIndependentVectorsPolar(self.maxint, math.pi/(10**exp), rng)
 
         out = LagrangeReduce(inp[0:2], inp[2:4])
 
