@@ -30,7 +30,7 @@ class Sequence(Generator):
         self.minint = params.minint
         self.dims = dims
         self.modulus = params.modulus
-
+        self.extra_int_arg1 = params.extra_int_arg1
     # integers from 1 to maxint, log uniform distribution
 
     def integer_loguniform_sequence(self, len, rng, type=None, max=None):
@@ -351,7 +351,7 @@ class latticeGenerator2(latticeGenerator):
         return v1 + v2
 
     def generate(self, rng, type2):  
-        expOptions = range(7)
+        expOptions = range(self.extra_int_arg1+1)
         exp = rng.choice(expOptions)
         inp = self.TwoLinearlyIndependentVectorsPolar(self.maxint, math.pi/(2*10**exp), rng)
 

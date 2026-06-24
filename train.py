@@ -32,6 +32,11 @@ def get_parser():
     # parse parameters
     parser = argparse.ArgumentParser(description="Language transfer")
 
+
+    #extra stuff? 
+    parser.add_argument("--extra_int_arg1", type=int, default=-1,
+                        help="second integer argument. Not applicable for all experiments.")
+    
     # main parameters
     parser.add_argument("--dump_path", type=str, default="",
                         help="Experiment dump path")
