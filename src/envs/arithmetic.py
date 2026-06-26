@@ -214,7 +214,7 @@ class ArithmeticEnvironment(object):
             self.generator=generators.latticeGeneratorUniform(params, dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
-        if self.operation == "latticeLogUniformPostive":
+        if self.operation == "latticeLogUniformPositive":
             self.generator=generators.latticeGeneratorLogUniformPositive(params, dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')

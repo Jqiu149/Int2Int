@@ -317,19 +317,20 @@ class latticeGeneratorUniform(latticeGenerator):
 
 class latticeGeneratorLogUniformAllSigns(latticeGenerator):
     def TwoLinearlyIndependentVectors(self, rng):
+        maxDigits = int(math.log10(self.maxint))+1
         signs = [0, 1,-1]
         zeroP = 1/(maxDigits*20)
         nonZeroP = (1-zeroP)/2
         p = [zeroP, nonZeroP, nonZeroP ]
 
         signVector = np.concatenate(
-                np.random.choices(signs, 2, replace =False,p=p),
-                np.random.choices(signs, 2, replace =False,p=p)
+                [rng.choice(signs, 2, replace =False,p=p),
+                rng.choice(signs, 2, replace =False,p=p)]
                 )
 
         inp  = self.integer_loguniform_sequence(4,rng) *signVector
         while( not pairVectorsR2LinearIndep(inp[0:2], inp[2:4])):
-            inp[2:4] = np.random.choices(signs, 2, replace =False,p=p)
+            inp[2:4] = rng.choice(signs, 2, replace =False,p=p)
             counter+=1
 
             if(counter >100):
