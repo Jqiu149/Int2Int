@@ -234,7 +234,7 @@ class ArithmeticEnvironment(object):
             #might be helpful to have a seperator of some sort but idk
             self.generator=generators.latticeOneStepGeneratorLogUniformAllSigns(params, dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
-            self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int'
+            self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
         if self.operation == "latticePolar":
             self.generator=generators.latticeGeneratorPolar(params,dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')

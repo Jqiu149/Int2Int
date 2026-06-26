@@ -299,7 +299,7 @@ class latticeGenerator(Sequence):
         return inp, out
 
 class latticeGeneratorUniform(latticeGenerator):
-    def TwoLinearlyIndependentVectors(rng):
+    def TwoLinearlyIndependentVectors(self, rng):
         inp = self.integer_sequence(4,rng)
 
         counter = 1
@@ -316,7 +316,7 @@ class latticeGeneratorUniform(latticeGenerator):
 
 
 class latticeGeneratorLogUniformAllSigns(latticeGenerator):
-    def TwoLinearlyIndependentVectors(rng):
+    def TwoLinearlyIndependentVectors(self, rng):
         signs = [0, 1,-1]
         zeroP = 1/(maxDigits*20)
         nonZeroP = (1-zeroP)/2
@@ -340,7 +340,7 @@ class latticeGeneratorLogUniformAllSigns(latticeGenerator):
         return inp
 
 class latticeGeneratorLogUniformPostive(latticeGenerator):
-    def TwoLinearlyIndependentVectors(rng): 
+    def TwoLinearlyIndependentVectors(self, rng): 
         inp = self.integer_loguniform_sequence(4,rng)
         
         counter = 1
@@ -376,7 +376,13 @@ class latticeGeneratorPolar(latticeGenerator):
     def logUniformReal(self,maxint,rng):
       return  10** (math.log10(maxint)*rng.rand())
 
-    def TwoLinearlyIndependentVectorsPolar(self, m,maxAngleDiff, rng):
+    def TwoLinearlyIndependentVectorsPolar(self, rng):
+
+        expOptions = range(self.extra_int_arg1+1)
+        exp = rng.choice(expOptions)
+        m = self.maxint, 
+        maxAngleDiff = math.pi/(10**exp)
+
         #m1,m2= self.integer_loguniform_sequence(2, rng,max=m) #... pretty sure this makes it so magnitudes can't be less than 1. i think that's fine... but a thing to note ig. and yeah thes are integers which i think is fine
         m1 = self.logUniformReal(m,rng)
         a1 = random.uniform(0, 2*math.pi)
@@ -404,10 +410,8 @@ class latticeGeneratorPolar(latticeGenerator):
 
         return v1 + v2
 
-    def generate(self, rng, type2):  
-        expOptions = range(self.extra_int_arg1+1)
-        exp = rng.choice(expOptions)
-        inp = self.TwoLinearlyIndependentVectorsPolar(self.maxint, math.pi/(10**exp), rng)
+    def generate(self, rng, type2):   
+        inp = self.TwoLinearlyIndependentVectorsPolar(rng)
 
         out = LagrangeReduce(inp[0:2], inp[2:4])
 
