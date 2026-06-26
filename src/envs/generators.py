@@ -309,6 +309,9 @@ class latticeGeneratorUniform(latticeGenerator):
     def TwoLinearlyIndependentVectors(self, rng):
         inp = self.integer_sequence(4,rng)
 
+        if( inp[0] == 0 and inp[1] ==0):
+            inp[0] = 1
+
         counter = 1
         while( not pairVectorsR2LinearIndep(inp[0:2], inp[2:4])):
             inp[2:4] = self.integer_sequence(2,rng)
@@ -321,16 +324,15 @@ class latticeGeneratorUniform(latticeGenerator):
         return inp
 
 
-
 class latticeGeneratorLogUniformAllSigns(latticeGenerator):
     def TwoLinearlyIndependentVectors(self, rng):
 
         maxDigits = int(math.log10(self.maxint))+1
-        signs = [0, 1,-1]
         zeroP = 1/(maxDigits*20)
         nonZeroP = (1-zeroP)/2
         p = [zeroP, nonZeroP, nonZeroP ]
 
+        signs = [0, 1,-1]
         signVector =rng.choice(signs, 4,p=p)
 
         inp  = self.integer_loguniform_sequence(4,rng) *signVector
@@ -343,8 +345,6 @@ class latticeGeneratorLogUniformAllSigns(latticeGenerator):
             if(counter >10000):
                 raise Exception(f"okay we generated more than 10000lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}, minInt is ${self.minit}, maxInt is ${self.maxint}")
                 return None 
-
-
         return inp
 
 class latticeGeneratorLogUniformPositive(latticeGenerator):
@@ -370,6 +370,7 @@ class latticeGeneratorPolar(latticeGenerator):
       return  10** (math.log10(maxint)*rng.rand())
 
     def TwoLinearlyIndependentVectors(self, rng):
+        #going to use this to control how small angles can  can get ig 
         assert self.extra_int_arg1 >= 0
 
         expOptions = range(self.extra_int_arg1+1)
@@ -394,6 +395,9 @@ class latticeGeneratorPolar(latticeGenerator):
 
             m2 = self.logUniformReal(m,rng)
             a2 = a1+rng.uniform(0,maxAngleDiff)
+
+            # a little unsure about if we want this or not. 
+            # 
             if random.uniform(0,1)> 0.5: 
                 a2 += math.pi
 
