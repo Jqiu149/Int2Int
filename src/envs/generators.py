@@ -324,24 +324,24 @@ class latticeGeneratorUniform(latticeGenerator):
 
 class latticeGeneratorLogUniformAllSigns(latticeGenerator):
     def TwoLinearlyIndependentVectors(self, rng):
+
         maxDigits = int(math.log10(self.maxint))+1
         signs = [0, 1,-1]
         zeroP = 1/(maxDigits*20)
         nonZeroP = (1-zeroP)/2
         p = [zeroP, nonZeroP, nonZeroP ]
 
-        signVector = np.concatenate(
-                [rng.choice(signs, 2, replace =False,p=p),
-                rng.choice(signs, 2, replace =False,p=p)]
-                )
+        signVector =rng.choice(signs, 4,p=p)
 
         inp  = self.integer_loguniform_sequence(4,rng) *signVector
+
         while( not pairVectorsR2LinearIndep(inp[0:2], inp[2:4])):
-            inp[2:4] = rng.choice(signs, 2, replace =False,p=p)
+            signVector =rng.choice(signs, 4,p=p) 
+            inp  = self.integer_loguniform_sequence(4,rng) *signVector
             counter+=1
 
-            if(counter >100):
-                raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}, minInt is ${self.minit}, maxInt is ${self.maxint}")
+            if(counter >10000):
+                raise Exception(f"okay we generated more than 10000lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}, minInt is ${self.minit}, maxInt is ${self.maxint}")
                 return None 
 
 
