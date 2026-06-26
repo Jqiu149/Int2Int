@@ -340,7 +340,7 @@ class latticeGeneratorLogUniformAllSigns(latticeGenerator):
 
         return inp
 
-class latticeGeneratorLogUniformPostive(latticeGenerator):
+class latticeGeneratorLogUniformPositive(latticeGenerator):
     def TwoLinearlyIndependentVectors(self, rng): 
         inp = self.integer_loguniform_sequence(4,rng)
         
@@ -353,6 +353,7 @@ class latticeGeneratorLogUniformPostive(latticeGenerator):
                 raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}, minInt is ${self.minit}, maxInt is ${self.maxint}")
                 return None 
 
+        return inp
 
 class latticeOneStepGeneratorUniform(latticeGeneratorUniform):
     def generate(self, rng, type2): 
