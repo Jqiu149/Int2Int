@@ -44,6 +44,15 @@ class Sequence(Generator):
         maxint = self.maxint if max is None else max
         return rng.randint(self. minint, maxint + 1, len)
 
+
+#untested
+    def integer_loguniform_sequnce_nonPositivesAllowed(self, len, rng, max = None):
+         signs = [0, 1,-1]
+         zeroP = 1/(maxDigits*20)
+         nonZeroP = (1-zeroP)/2
+         p = [zeroP, nonZeroP, nonZeroP ]
+         return  self.integer_loguniform_sequnce()*np.random.choice(signs, len, p=p)
+
     # integer (n,p) matrix, uniformly distributed coefficients between -maxint and maxint 
     def integer_matrix(self, n, p, rng):
         maxint = (int)(self.maxint + 0.5)
@@ -279,14 +288,19 @@ def LagrangeReduceOneStep(v1,v2, returnCodeClass=False):
 class latticeGenerator(Sequence):
 
     #creates 2 vectors that are linearly indepdnet in R. 
-    #not gauranteed ig.... we basically jsut try 100 times and if it doesn't wokr then we give up but i think it's unlikely for it to not work out...
-    #other option was to figure out what entry to add 1 to..... eh
+    # or return none if fails ig
     def TwoLinearlyIndependentVectors(self,rng):
-        inp = self.integer_loguniform_sequence(4,rng)
-        if inp[0] ==0 and inp[1] ==0 :
-            inp[0]=1
-        if inp[2] ==0 and inp[3] ==0: 
-            inp[3] =1
+        pass
+
+    def generate(self, rng, type2):  
+        inp = self.TwoLinearlyIndependentVectors(rng)
+        out = LagrangeReduce(inp[0:2], inp[2:4])
+
+        return inp, out
+
+class latticeGeneratorUniform(latticeGenerator):
+    def TwoLinearlyIndependentVectors(rng):
+        inp = self.integer_sequence(4,rng)
 
         counter = 1
         while( not pairVectorsR2LinearIndep(inp[0:2], inp[2:4])):
@@ -296,18 +310,57 @@ class latticeGenerator(Sequence):
             if(counter >100):
                 raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}, minInt is ${self.minit}, maxInt is ${self.maxint}")
                 return None 
+
         return inp
 
 
 
-    def generate(self, rng, type2):  
+class latticeGeneratorLogUniformAllSigns(latticeGenerator):
+    def TwoLinearlyIndependentVectors(rng):
+        signs = [0, 1,-1]
+        zeroP = 1/(maxDigits*20)
+        nonZeroP = (1-zeroP)/2
+        p = [zeroP, nonZeroP, nonZeroP ]
+
+        signVector = np.concatenate(
+                np.random.choices(signs, 2, replace =False,p=p),
+                np.random.choices(signs, 2, replace =False,p=p)
+                )
+
+        inp  = self.integer_loguniform_sequence(4,rng) *signVector
+        while( not pairVectorsR2LinearIndep(inp[0:2], inp[2:4])):
+            inp[2:4] = np.random.choices(signs, 2, replace =False,p=p)
+            counter+=1
+
+            if(counter >100):
+                raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}, minInt is ${self.minit}, maxInt is ${self.maxint}")
+                return None 
+
+
+        return inp
+
+class latticeGeneratorLogUniformPostive(latticeGenerator):
+    def TwoLinearlyIndependentVectors(rng): 
+        inp = self.integer_loguniform_sequence(4,rng)
+        
+        counter = 1
+        while( not pairVectorsR2LinearIndep(inp[0:2], inp[2:4])):
+            inp[2:4] = self.integer_sequence(2,rng)
+            counter+=1
+
+            if(counter >100):
+                raise Exception(f"okay we generated more than 100 lineraly dependent vectors in a row, something is probably wrong, vector array is: ${inp}, minInt is ${self.minit}, maxInt is ${self.maxint}")
+                return None 
+
+
+class latticeOneStepGeneratorUniform(latticeGeneratorUniform):
+    def generate(self, rng, type2): 
         inp = self.TwoLinearlyIndependentVectors(rng)
-        out = LagrangeReduce(inp[0:2], inp[2:4])
+        out = LagrangeReduceOneStep(inp[0:2], inp[2:4])
 
         return inp, out
 
-
-class latticeOneStepGenerator(latticeGenerator):
+class latticeOneStepGeneratorLogUniformAllSigns(latticeGeneratorLogUniformAllSigns):
     def generate(self, rng, type2): 
         inp = self.TwoLinearlyIndependentVectors(rng)
         out = LagrangeReduceOneStep(inp[0:2], inp[2:4])
@@ -315,7 +368,8 @@ class latticeOneStepGenerator(latticeGenerator):
         return inp, out
 
 
-class latticeGenerator2(latticeGenerator):
+
+class latticeGeneratorPolar(latticeGenerator):
     def polarToCartesian(self, angle, magnitude): 
         return [np.cos(angle)*magnitude, np.sin(angle)*magnitude]
 
@@ -360,14 +414,7 @@ class latticeGenerator2(latticeGenerator):
         return inp, out
 
 
-class latticeOneStepGenerator(latticeGenerator):
-    def generate(self, rng, type2): 
-        inp = self.TwoLinearlyIndependentVectors(rng)
-        out = LagrangeReduceOneStep(inp[0:2], inp[2:4])
-
-        return inp, out
-
-class latticeOneStepGenerator2(latticeGenerator2):
+class latticeOneStepGeneratorPolar(latticeGeneratorPolar):
     def generate(self, rng, type2): 
         expOptions = range(7)
         exp = rng.choice(expOptions)

@@ -208,24 +208,39 @@ class ArithmeticEnvironment(object):
             self.output_encoder = encoders.PositionalIntsPairedPadded(maxLength, 10, includeSigns = False, reverseOrder=True)
          
             
-        if self.operation == "lattice":
+        if self.operation == "latticeUniform":
             #choosing right now to interpret input and ouput as length 4 array of integers
             #might be helpful to have a seperator of some sort but idk
-            self.generator=generators.latticeGenerator(params, dims)
+            self.generator=generators.latticeGeneratorUniform(params, dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
-        if self.operation == "latticeOneStep":
+        if self.operation == "latticeLogUniformPostive":
+            self.generator=generators.latticeGeneratorLogUniformPositive(params, dims)
+            self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
+            self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
+        if self.operation =="latticeLogUniform":
+            self.generator=generators.latticeGeneratorLogUniformAllSigns(params, dims)
+            self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
+            self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
+
+        if self.operation == "latticeOneStepUniform":
             #choosing right now to interpret input and ouput as length 4 array of integers
             #might be helpful to have a seperator of some sort but idk
-            self.generator=generators.latticeOneStepGenerator(params, dims)
+            self.generator=generators.latticeOneStepGeneratorUniform(params, dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
-        if self.operation == "lattice2":
-            self.generator=generators.latticeGenerator2(params,dims)
+        if self.operation == "latticeOneStepLogUniformAllSigns":
+            #choosing right now to interpret input and ouput as length 4 array of integers
+            #might be helpful to have a seperator of some sort but idk
+            self.generator=generators.latticeOneStepGeneratorLogUniformAllSigns(params, dims)
+            self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
+            self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int'
+        if self.operation == "latticePolar":
+            self.generator=generators.latticeGeneratorPolar(params,dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
-        if self.operation == "latticeOneStep2":
-            self.generator=generators.latticeOneStepGenerator2(params,dims)
+        if self.operation == "latticeOneStepPolar":
+            self.generator=generators.latticeOneStepGeneratorPolar(params,dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
 
@@ -331,7 +346,7 @@ class ArithmeticEnvironment(object):
         elif self.operation in ["oneStepAdd", "oneStepAddPad","oneStepAddInpOutPad-rev", "oneStepAdd-rev","oneStepAdd-AddedSpaces-rev" , "max", "maxRandSpaces"]:
             v = self.input_encoder.decode(xi) 
             return max( int(math.log10(v[0])), int(math.log10(v[1])))+1
-        elif self.operation in ["lattice", "lattice2"]:
+        elif self.operation in ["latticeUniform", "latticeLogUniform", "latticeLogUniformPositive", "lattice2"]:
             v = self.input_encoder.decode(xi)
             return generators.LagrangeReduce(v[0:2],v[2:4], returnStepCount= True)
         elif self.operation in ["latticeOneStep", "latticeOneStep2"]:
