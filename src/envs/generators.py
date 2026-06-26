@@ -286,6 +286,10 @@ def LagrangeReduceOneStep(v1,v2, returnCodeClass=False):
 #note we're only doing vectors in Z^2. values are based on min and maxint. 
 #if we want, we can later try to think about how to get more genreal things but... :/
 class latticeGenerator(Sequence):
+    def __init__(self, params, dims, oneStep = False):
+        super().__init__(params,dims)
+        self.oneStep = oneStep
+
 
     #creates 2 vectors that are linearly indepdnet in R. 
     # or return none if fails ig
@@ -293,8 +297,11 @@ class latticeGenerator(Sequence):
         pass
 
     def generate(self, rng, type2):  
+
         inp = self.TwoLinearlyIndependentVectors(rng)
-        out = LagrangeReduce(inp[0:2], inp[2:4])
+
+
+        out = LagrangeReduceOneStep(inp[0:2], inp[2:4])  if self.oneStep else LagrangeReduce(inp[0:2], inp[2:4])
 
         return inp, out
 
@@ -355,22 +362,6 @@ class latticeGeneratorLogUniformPositive(latticeGenerator):
 
         return inp
 
-class latticeOneStepGeneratorUniform(latticeGeneratorUniform):
-    def generate(self, rng, type2): 
-        inp = self.TwoLinearlyIndependentVectors(rng)
-        out = LagrangeReduceOneStep(inp[0:2], inp[2:4])
-
-        return inp, out
-
-class latticeOneStepGeneratorLogUniformAllSigns(latticeGeneratorLogUniformAllSigns):
-    def generate(self, rng, type2): 
-        inp = self.TwoLinearlyIndependentVectors(rng)
-        out = LagrangeReduceOneStep(inp[0:2], inp[2:4])
-
-        return inp, out
-
-
-
 class latticeGeneratorPolar(latticeGenerator):
     def polarToCartesian(self, angle, magnitude): 
         return [np.cos(angle)*magnitude, np.sin(angle)*magnitude]
@@ -378,17 +369,16 @@ class latticeGeneratorPolar(latticeGenerator):
     def logUniformReal(self,maxint,rng):
       return  10** (math.log10(maxint)*rng.rand())
 
-    def TwoLinearlyIndependentVectorsPolar(self, rng):
+    def TwoLinearlyIndependentVectors(self, rng):
+        assert self.extra_int_arg1 >= 0
 
         expOptions = range(self.extra_int_arg1+1)
         exp = rng.choice(expOptions)
-        m = self.maxint, 
+        m = self.maxint
         maxAngleDiff = math.pi/(10**exp)
 
-        #m1,m2= self.integer_loguniform_sequence(2, rng,max=m) #... pretty sure this makes it so magnitudes can't be less than 1. i think that's fine... but a thing to note ig. and yeah thes are integers which i think is fine
         m1 = self.logUniformReal(m,rng)
         a1 = random.uniform(0, 2*math.pi)
-        #a2 = a1+self.integer_loguniform_sequence(1,rng, max =maxAngleDiff)[0]# ... maybe should also do liek negative of thing idk like opposite direction, but close to pralle 
 
         v1 = [int(x) for x in self.polarToCartesian(a1, m1)]
 
@@ -404,7 +394,7 @@ class latticeGeneratorPolar(latticeGenerator):
 
             m2 = self.logUniformReal(m,rng)
             a2 = a1+rng.uniform(0,maxAngleDiff)
-            if random.uniform(0,1)> 0.5 : 
+            if random.uniform(0,1)> 0.5: 
                 a2 += math.pi
 
             v2 = [int(x) for x in self.polarToCartesian(a2, m2)]
@@ -412,20 +402,5 @@ class latticeGeneratorPolar(latticeGenerator):
 
         return v1 + v2
 
-    def generate(self, rng, type2):   
-        inp = self.TwoLinearlyIndependentVectorsPolar(rng)
-
-        out = LagrangeReduce(inp[0:2], inp[2:4])
-
-        return inp, out
 
 
-class latticeOneStepGeneratorPolar(latticeGeneratorPolar):
-    def generate(self, rng, type2): 
-        expOptions = range(7)
-        exp = rng.choice(expOptions)
-        inp = self.TwoLinearlyIndependentVectorsPolar(self.maxint, math.pi/(2*10**exp), rng)
-
-        out = LagrangeReduceOneStep(inp[0:2], inp[2:4])
-
-        return inp, out
