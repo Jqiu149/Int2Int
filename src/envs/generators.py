@@ -259,24 +259,22 @@ def LagrangeReduceOneStep(v1,v2, returnCodeClass=False):
     norm1Squared = np.dot(v1, v1) 
     norm2Squared = np.dot(v2,v2) 
 
-    codeClass = 0
+    
     if(norm1Squared> norm2Squared):
         v1,v2 = v2,v1
         norm1Squared,norm2Squared = norm2Squared,norm1Squared
-        codeClass+= 20
+        swapped = True
     else:
-        codeClass+=10
+        swapped = False
 
     u = round( (np.dot(v1,v2))/ norm1Squared)
     v2Updated= v2-u*v1
 
-    if (v2Updated.tolist()== v2.tolist()):
-        codeClass+=1
-    else:
-        codeClass+=2
-
+    
     if(returnCodeClass):
-        return codeClass
+        codeClass = "20" if swapped else "10"
+        codeClass += str(u)
+        return int(codeClass)
 
     return v1.tolist()+ v2Updated.tolist()
 

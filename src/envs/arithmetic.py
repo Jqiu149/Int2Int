@@ -371,9 +371,9 @@ class ArithmeticEnvironment(object):
            # return generators.LagrangeReduce(v[0:2],v[2:4], returnStepCount= True)
 
         elif self.operation in ["latticeOneStepUniform", "latticeOneStepLogUniform", "latticeOneStepLogUniformPositive","latticeOneStepPolar"]:
-
             v = self.input_encoder.decode(xi)
             return generators.LagrangeReduceOneStep(v[0:2], v[2:4], returnCodeClass=True)
+
         else:
             v = self.output_encoder.decode(yi)
             if v is None:
