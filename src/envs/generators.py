@@ -324,7 +324,7 @@ class latticeGeneratorUniform(latticeGenerator):
         return inp
 
 
-class latticeGeneratorLogUniformAllSigns(latticeGenerator):
+class latticeGeneratorLogUniform(latticeGenerator):
     def TwoLinearlyIndependentVectors(self, rng):
 
         maxDigits = int(math.log10(self.maxint))+1
@@ -337,6 +337,7 @@ class latticeGeneratorLogUniformAllSigns(latticeGenerator):
 
         inp  = self.integer_loguniform_sequence(4,rng) *signVector
 
+        counter = 0
         while( not pairVectorsR2LinearIndep(inp[0:2], inp[2:4])):
             signVector =rng.choice(signs, 4,p=p) 
             inp  = self.integer_loguniform_sequence(4,rng) *signVector

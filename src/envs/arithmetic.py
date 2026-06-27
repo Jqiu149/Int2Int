@@ -219,7 +219,7 @@ class ArithmeticEnvironment(object):
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
         if self.operation =="latticeLogUniform":
-            self.generator=generators.latticeGeneratorLogUniformAllSigns(params, dims)
+            self.generator=generators.latticeGeneratorLogUniform(params, dims)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
 
@@ -351,8 +351,25 @@ class ArithmeticEnvironment(object):
             v = self.input_encoder.decode(xi) 
             return max( int(math.log10(v[0])), int(math.log10(v[1])))+1
         elif self.operation in ["latticeUniform", "latticeLogUniform", "latticeLogUniformPositive", "latticePolar"]:
+            
             v = self.input_encoder.decode(xi)
-            return generators.LagrangeReduce(v[0:2],v[2:4], returnStepCount= True)
+
+            # relative angle between vectors
+            u1 = v[0:2]
+            u2= v[2:4]
+            angle = np.acos( np.dot(u1,u2)/(np.linalg.norm(u1)*np.linalg.norm(u2)))
+
+            numClasses = self.max_class
+            class_size = math.pi/numClasses
+
+            return int(angle/class_size)
+
+            # angles of both vectors?
+            
+
+           #number of steps 
+           # return generators.LagrangeReduce(v[0:2],v[2:4], returnStepCount= True)
+
         elif self.operation in ["latticeOneStepUniform", "latticeOneStepLogUniform", "latticeOneStepLogUniformPositive","latticeOneStepPolar"]:
 
             v = self.input_encoder.decode(xi)
@@ -498,4 +515,6 @@ class ArithmeticEnvironment(object):
         parser.add_argument(
             "--max_class", type=int, default=101, help="Maximum class for reporting with error predictions"
         )
+
+
 
