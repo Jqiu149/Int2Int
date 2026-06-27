@@ -272,8 +272,8 @@ def LagrangeReduceOneStep(v1,v2, returnCodeClass=False):
 
     
     if(returnCodeClass):
-        codeClass = "20" if swapped else "10"
-        codeClass += str(abs(u))
+        codeClass = "2" if swapped else "1"
+        codeClass += str(min(abs(u), 999))
         return int(codeClass)
 
     return v1.tolist()+ v2Updated.tolist()
