@@ -354,21 +354,23 @@ class ArithmeticEnvironment(object):
             
             v = self.input_encoder.decode(xi)
 
-            # relative angle between vectors
-            u1 = v[0:2]
-            u2= v[2:4]
-            angle = np.acos( np.dot(u1,u2)/(np.linalg.norm(u1)*np.linalg.norm(u2)))
 
-            numClasses = self.max_class
-            class_size = math.pi/numClasses
 
-            return int(angle/class_size)
-
-            # angles of both vectors?
+#            # relative angle between vectors
+#            u1 = v[0:2]
+#            u2= v[2:4]
+#            angle = np.acos( np.dot(u1,u2)/(np.linalg.norm(u1)*np.linalg.norm(u2)))
+#
+#            numClasses = self.max_class
+#            class_size = math.pi/numClasses
+#
+#            return int(angle/class_size)
+#
+#            # angles of both vectors?
             
 
-           #number of steps 
-           # return generators.LagrangeReduce(v[0:2],v[2:4], returnStepCount= True)
+            #number of steps 
+            return generators.LagrangeReduce(v[0:2],v[2:4], returnStepCount= True)
 
         elif self.operation in ["latticeOneStepUniform", "latticeOneStepLogUniform", "latticeOneStepLogUniformPositive","latticeOneStepPolar"]:
             v = self.input_encoder.decode(xi)

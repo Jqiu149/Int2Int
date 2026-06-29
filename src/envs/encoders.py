@@ -78,6 +78,39 @@ class PositionalInts(Encoder):
 
 
 
+# the way we wrote this assumes base 10
+# should probbaly make it more general ....
+class PositionalRealTruncated(PositionalInts):
+    def __init__(self, base = 10, numDecimalPlaces=None):
+        super().__init__(base)
+        self.symbols+=["."]
+        self.numDecimalPlaces = numDecimalPlaces
+
+    def encode(self, val):
+        
+        valToStr = str(val).split('.')
+        intPart = valToStr[0]
+        decPart = valToStr[1]
+
+        res = super().encode(int(intPart))
+        if(decPart != ""):
+            res += ['.'] + super().encode(int(decPart[0:self.numDecimalPlaces]))[1:None]
+
+        return res
+
+    def parse(self, lst):
+        decimalIndex = -1 if "." not in lst else lst.index(".")
+        print(lst, decimalIndex)
+
+        resInt = super().parse(lst[0:decimalIndex])
+        resDec = super().parse([lst[0]]+ lst[decimalIndex+1:None])
+        print(resInt, [lst[0]]+ lst[decimalIndex+1:None], resDec)
+
+        return float(str(resInt[0]) + "." + str(resDec[0])), 1 
+
+
+
+
 def insertRandomSpaces(inp, insertPeriod, minSpaces=0, maxSpaces=10):
     assert type(inp) == list
     assert type(minSpaces) == int and type(maxSpaces) ==int and type(insertPeriod) == int 
@@ -387,10 +420,13 @@ class NumberArray(Encoder):
         self.symbols.extend(self.dimencoder.symbols)
         if code == 'pos_int':
             self.subencoder = PositionalInts(params.base)
-        elif code =="pos_int_modified":
-            self.subencoder= PositionalIntsModified(max(abs(params.minint), params.maxint), params.base)
-        elif code =="pos_int_modified2":
-            self.subencoder= PositionalIntsModified2(max(abs(params.minint), params.maxint), params.base)
+        if code in 'pos_int_decimals'
+			#rn it's just for base 10..... i probably should've maade it more genreal but....  :D 
+            decimalPlaces = None if code == pos_int_decimals else pos_int_decimals[-1]
+            if( decimalPlaces is not None and not decimalPlaces.isNumeric() )
+                raise Exception("unexpected code, should have a zero at the end or nothing for NumberArray of decimal numbers")
+            self.subencoder = PositionalRealTruncated(10, numDecimalPlaces = code[-1])
+
         else:
             self.subencoder = SymbolicInts(params.minint, params.maxint)
         self.symbols.extend(self.subencoder.symbols)
