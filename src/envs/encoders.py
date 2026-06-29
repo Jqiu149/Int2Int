@@ -420,10 +420,10 @@ class NumberArray(Encoder):
         self.symbols.extend(self.dimencoder.symbols)
         if code == 'pos_int':
             self.subencoder = PositionalInts(params.base)
-        if code in 'pos_int_decimals'
+        if code[:-1]== 'pos_int_decimals':
 			#rn it's just for base 10..... i probably should've maade it more genreal but....  :D 
             decimalPlaces = None if code == pos_int_decimals else pos_int_decimals[-1]
-            if( decimalPlaces is not None and not decimalPlaces.isNumeric() )
+            if( decimalPlaces is not None and not decimalPlaces.isNumeric() ):
                 raise Exception("unexpected code, should have a zero at the end or nothing for NumberArray of decimal numbers")
             self.subencoder = PositionalRealTruncated(10, numDecimalPlaces = code[-1])
 
