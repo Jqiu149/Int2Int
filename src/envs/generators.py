@@ -380,7 +380,7 @@ class latticeGeneratorPolar(latticeGenerator):
         m1 = self.logUniformReal(m,rng)
         a1 = random.uniform(0, 2*math.pi)
 
-        v1 = self.polarToCartesian(a1, m1)
+        v1 = [int(10*x) for x in self.polarToCartesian(a1, m1)]
 
         if(v1 == [0,0]):
             v1[0] = 1
@@ -400,7 +400,7 @@ class latticeGeneratorPolar(latticeGenerator):
             if random.uniform(0,1)> 0.5: 
                 a2 += math.pi
 
-            v2 = self.polarToCartesian(a2, m2)
+            v2 = [int(x*10) for self.polarToCartesian(a2, m2)]
             counter+=1  
 
         return v1 + v2

@@ -241,8 +241,8 @@ class ArithmeticEnvironment(object):
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
         if self.operation == "latticePolar":
             self.generator=generators.latticeGeneratorPolar(params,dims)
-            self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'dec3')
-            self.output_encoder = encoders.NumberArray(params,4,'V',1,'dec3')
+            self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int')
+            self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
         if self.operation == "latticeOneStepPolar":
             self.generator=generators.latticeGeneratorPolar(params,dims, oneStep = True)
             self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'dec3')
