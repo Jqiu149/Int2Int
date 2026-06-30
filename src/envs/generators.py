@@ -400,7 +400,7 @@ class latticeGeneratorPolar(latticeGenerator):
             if random.uniform(0,1)> 0.5: 
                 a2 += math.pi
 
-            v2 = [int(x*10) for self.polarToCartesian(a2, m2)]
+            v2 = [int(x*10) for x in self.polarToCartesian(a2, m2)]
             counter+=1  
 
         return v1 + v2
