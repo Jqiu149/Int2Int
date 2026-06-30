@@ -241,14 +241,13 @@ class ArithmeticEnvironment(object):
             self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int')
         if self.operation == "latticePolar":
             self.generator=generators.latticeGeneratorPolar(params,dims)
-            self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int_decimal3')
-            self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int_decimal3')
+            self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'dec3')
+            self.output_encoder = encoders.NumberArray(params,4,'V',1,'dec3')
         if self.operation == "latticeOneStepPolar":
             self.generator=generators.latticeGeneratorPolar(params,dims, oneStep = True)
-            self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'pos_int_decimal3')
-            self.output_encoder = encoders.NumberArray(params,4,'V',1,'pos_int_decimal3')
-
-
+            self.input_encoder = encoders.NumberArray(params,4,'V', 1, 'dec3')
+            self.output_encoder = encoders.NumberArray(params,4,'V',1,'dec3')
+ 
         if self.operation == "max": 
             self.generator = generators.maxGenerator(params, dims)
             self.input_encoder=encoders.NumberArray(params,2, 'V', 1, 'pos_int')
@@ -351,6 +350,7 @@ class ArithmeticEnvironment(object):
             v = self.input_encoder.decode(xi) 
             return max( int(math.log10(v[0])), int(math.log10(v[1])))+1
         elif self.operation in ["latticeUniform", "latticeLogUniform", "latticeLogUniformPositive", "latticePolar"]:
+            
             
             v = self.input_encoder.decode(xi)
 

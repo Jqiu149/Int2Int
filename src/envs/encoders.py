@@ -84,29 +84,83 @@ class PositionalRealTruncated(PositionalInts):
     def __init__(self, base = 10, numDecimalPlaces=None):
         super().__init__(base)
         self.symbols+=["."]
-        self.numDecimalPlaces = numDecimalPlaces
+        self.numDecimalPlaces = int(numDecimalPlaces)
 
     def encode(self, val):
         
         valToStr = str(val).split('.')
         intPart = valToStr[0]
-        decPart = valToStr[1]
+        decPart =  None if (len(valToStr) == 1 or valToStr[1]=='0')  else valToStr[1]
 
         res = super().encode(int(intPart))
-        if(decPart != ""):
-            res += ['.'] + super().encode(int(decPart[0:self.numDecimalPlaces]))[1:None]
+
+
+        if(decPart != None):
+            numLeadingZeros = 0 
+            while(numLeadingZeros < self.numDecimalPlaces and decPart[numLeadingZeros] == '0'):
+                numLeadingZeros += 1
+
+
+            
+            if self.numDecimalPlaces is None:
+                actualDecPart = decPart[0:self.numDecimalPlaces].rstrip('0')
+                if actualDecPart !='0':
+                    res += ['.'] + ['0']*numLeadingZeros + super().encode(int(actualDecPart))[1:None]
+            elif self.numDecimalPlaces > numLeadingZeros:
+                actualDecPart = decPart[0:self.numDecimalPlaces-numLeadingZeros+1].rstrip('0')
+                if actualDecPart!= '':
+                    res += ['.'] + ['0']*numLeadingZeros + super().encode(int(actualDecPart))[1:None]
+
+        if res[0] != '-' and res[0] != '+':
 
         return res
 
+
     def parse(self, lst):
-        decimalIndex = -1 if "." not in lst else lst.index(".")
-        print(lst, decimalIndex)
 
-        resInt = super().parse(lst[0:decimalIndex])
-        resDec = super().parse([lst[0]]+ lst[decimalIndex+1:None])
-        print(resInt, [lst[0]]+ lst[decimalIndex+1:None], resDec)
+            endOfIntPart = None
+            decimalIndex = None
+            for i,j in enumerate(lst[1:None]):
+                if j == '+' or j== '-':
+                    decimalIndex = None
+                    endOfIntPart = i+1
+                    break;
+                if j == '.':
+                    decimalIndex = i+1
+                    endOfIntPart = i+1
+                    break;
 
-        return float(str(resInt[0]) + "." + str(resDec[0])), 1 
+            leadingZeroCount = 0
+            if decimalIndex is not None: 
+                while lst[decimalIndex + 1 + leadingZeroCount]== '0':
+                    leadingZeroCount += 1
+
+            resInt = super().parse(lst[0:endOfIntPart])
+            resDec = None if decimalIndex is None else super().parse([lst[0]]+ lst[decimalIndex+1:None]) 
+
+#we don't need to add 1 for the . b/c the resDec[1] counds 1 for the sign we addded for it...
+            pos = resInt[1] if resDec == None else resInt[1]+resDec[1]
+            
+
+            if lst[0] == '-':
+                val =  int(resInt[0]) if resDec is None else float(str(resInt[0]) + "." +"0"*leadingZeroCount+ str(resDec[0])[1:None])
+            else: 
+              val =  int(resInt[0]) if resDec is None else float(str(resInt[0]) + "." + "0"*leadingZeroCount + str(resDec[0]))
+            return val, pos
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -418,17 +472,17 @@ class NumberArray(Encoder):
         self.symbols = []
         self.dimencoder = SymbolicInts(1, max_dim, dim_prefix)
         self.symbols.extend(self.dimencoder.symbols)
+        self.code = code
         if code == 'pos_int':
             self.subencoder = PositionalInts(params.base)
-        if code[:-1]== 'pos_int_decimals':
+        elif code == 'dec3':
 			#rn it's just for base 10..... i probably should've maade it more genreal but....  :D 
-            decimalPlaces = None if code == pos_int_decimals else pos_int_decimals[-1]
-            if( decimalPlaces is not None and not decimalPlaces.isNumeric() ):
+            decimalPlaces = None if code == "dec" else code[-1]
+            if( decimalPlaces is not None and not decimalPlaces.isnumeric()):
                 raise Exception("unexpected code, should have a zero at the end or nothing for NumberArray of decimal numbers")
-            self.subencoder = PositionalRealTruncated(10, numDecimalPlaces = code[-1])
-
+            self.subencoder = PositionalRealTruncated(10, numDecimalPlaces = decimalPlaces)
         else:
-            self.subencoder = SymbolicInts(params.minint, params.maxint)
+            raise Exception(f"unexpected code for NumberArrayEncoder, check if theres a typo, code was {code}")
         self.symbols.extend(self.subencoder.symbols)
 
         
@@ -452,6 +506,10 @@ class NumberArray(Encoder):
             shap.append(v)
             h = h[1:]
         m = np.zeros(tuple(shap), dtype=int)
+
+        if "dec" in self.code:
+            m = np.zeros(tuple(shap),dtype=float)
+
         for val in np.nditer(m, op_flags=['readwrite']):
             v, pos = self.subencoder.parse(h)
             if v is None:
