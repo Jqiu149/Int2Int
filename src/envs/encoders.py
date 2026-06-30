@@ -79,7 +79,7 @@ class PositionalInts(Encoder):
 
 
 # the way we wrote this assumes base 10
-# should probbaly make it more general ....
+# should probbaly make it more general .... at least for powers of 10
 class PositionalRealTruncated(PositionalInts):
     def __init__(self, base = 10, numDecimalPlaces=None):
         super().__init__(base)
@@ -110,8 +110,6 @@ class PositionalRealTruncated(PositionalInts):
                 actualDecPart = decPart[0:self.numDecimalPlaces-numLeadingZeros+1].rstrip('0')
                 if actualDecPart!= '':
                     res += ['.'] + ['0']*numLeadingZeros + super().encode(int(actualDecPart))[1:None]
-
-        if res[0] != '-' and res[0] != '+':
 
         return res
 
@@ -475,7 +473,7 @@ class NumberArray(Encoder):
         self.code = code
         if code == 'pos_int':
             self.subencoder = PositionalInts(params.base)
-        elif code == 'dec3':
+        elif code[0:3]== 'dec':
 			#rn it's just for base 10..... i probably should've maade it more genreal but....  :D 
             decimalPlaces = None if code == "dec" else code[-1]
             if( decimalPlaces is not None and not decimalPlaces.isnumeric()):
