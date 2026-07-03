@@ -378,8 +378,7 @@ class ArithmeticEnvironment(object):
             v = self.input_encoder.decode(xi)
             code_class = generators.LagrangeReduceOneStep(v[0:2], v[2:4], returnCodeClass=True)
             return code_class
-        elif self.operation == "data" and self.class_func == "int_output"
-
+        elif self.operation == "data" and self.class_func == "int_output":
             v = self.output_encoder.decode(yi)
             return v
         else:
