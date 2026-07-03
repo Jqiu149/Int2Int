@@ -75,6 +75,8 @@ class ArithmeticEnvironment(object):
         self.base = params.base
         self.max_class = params.max_class
 
+        self.class_func = params.class_func
+
         
         #    self.input_encoder = encoders.NumberArray(params, 5, 'V', 1)
         #    self.output_encoder = encoders.SymbolicInts(0, 10)
@@ -376,15 +378,13 @@ class ArithmeticEnvironment(object):
             v = self.input_encoder.decode(xi)
             code_class = generators.LagrangeReduceOneStep(v[0:2], v[2:4], returnCodeClass=True)
             return code_class
-        else:
+        elif self.operation == "data" and self.class_func == "int_output"
+
             v = self.output_encoder.decode(yi)
-            if v is None:
-                return 0
+            return v
+        else:
+            return 0 
 
-            if v == 0:
-                return 0
-
-            return int(math.log10(self.output_encoder.decode(yi)))+1
 
     def check_prediction(self, src, tgt, hyp):
         w = self.output_encoder.decode(hyp)
@@ -519,4 +519,7 @@ class ArithmeticEnvironment(object):
         )
 
 
+        parser.add_argument(
+                "--class_func", type=str , default="None", help="extra paramter i'm using if we want to select from a couple of options for the classes we split our validation set into in the code_class section"
+        )
 
