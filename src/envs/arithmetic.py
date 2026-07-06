@@ -386,7 +386,7 @@ class ArithmeticEnvironment(object):
             if v == 0:
                 return 1
 
-            return int( math.log10(v) ) +1
+            return int( math.log10(abs(v)) ) +1
         else:
             return 0 
 
