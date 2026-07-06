@@ -381,6 +381,12 @@ class ArithmeticEnvironment(object):
         elif self.operation == "data" and self.class_func == "int_output":
             v = self.output_encoder.decode(yi)
             return v
+        elif self.operation == "data" and self.class_func == "int_output_log":
+            v = self.output_encoder.decode(yi)
+            if v == 0:
+                return 1
+
+            return int( math.log10(v) ) +1
         else:
             return 0 
 
