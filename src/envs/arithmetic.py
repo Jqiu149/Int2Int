@@ -387,6 +387,9 @@ class ArithmeticEnvironment(object):
                 return 1
 
             return int( math.log10(abs(v)) ) +1
+        elif self.operation == "data" and self.class_func == "FFEC_prime-10007":
+            v = self.input_encoder.decode(xi)
+            return v[0]-10007
         else:
             return 0 
 
