@@ -331,7 +331,7 @@ class ArithmeticEnvironment(object):
             v1, v2 = self.output_encoder.decode(xi)
             
             
-            return max( math.log10(abs(v1)), math.log10(abs(v2))+1
+            return max( math.log10(abs(v1)), math.log10(abs(v2))) + 1
         elif self.operation in ["add", "add2", "add3", "mult-default-rep-logUniform", "mult-defaultRep-logUniform-reverse", "mult-pairedRep-outputDefault-reverse","mult-ExpRep-reverse", "mult-pairedRep-outputExpRep-reverse", "mult-1xn-defaultRep", "mult-defaultRep-weightedSimple"]:
 
             
