@@ -328,11 +328,10 @@ class ArithmeticEnvironment(object):
         if self.operation in ["fraction_add", "fraction_product", "fraction_simplify", "fraction_round", "fraction_determinant"]:
             return 0
         elif self.operation in ["gcd", "modular_add", "modular_mul"]:
-            v = self.output_encoder.decode(yi)
-            assert v is not None
-            if v >= self.max_class:
-                v = self.max_class
-            return v
+            v1, v2 = self.output_encoder.decode(xi)
+            
+            
+            return max( math.log10(abs(v1)), math.log10(abs(v2))+1
         elif self.operation in ["add", "add2", "add3", "mult-default-rep-logUniform", "mult-defaultRep-logUniform-reverse", "mult-pairedRep-outputDefault-reverse","mult-ExpRep-reverse", "mult-pairedRep-outputExpRep-reverse", "mult-1xn-defaultRep", "mult-defaultRep-weightedSimple"]:
 
             
