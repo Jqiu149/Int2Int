@@ -104,6 +104,8 @@ class ArithmeticEnvironment(object):
                 self.output_encoder = encoders.SymbolicInts(0, 1)
         self.input_encoder = encoders.NumberArray(params, max_dim, 'V', tensor_dim)
 
+        self.generator = generators.Sequence(params, dims)
+
         if self.operation == 'data':
             assert params.data_types, "argument --data_types is required"
             i, o = params.data_types.split(':')
@@ -113,7 +115,8 @@ class ArithmeticEnvironment(object):
 
             global SPECIAL_WORDS
             SPECIAL_WORDS += ["e", "q", "x"]
-        self.generator = generators.Sequence(params, dims)
+
+            self.generator = generators.data_operation_generator(params)
 
         if self.operation == "lcm":
             self.generator = generators.lcmGenerator(params, dims)

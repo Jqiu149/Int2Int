@@ -55,6 +55,7 @@ def check_hypothesis(eq):
             s1 = []
             s2 = []
     eq["is_valid"] = m
+
     for i in range(env.n_eval_metrics):
         if m == 2:
             eq[f"is_valid{i+1}"] = 1

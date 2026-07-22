@@ -23,19 +23,29 @@ class Generator(ABC):
 
 #class we're using for when we're training on data stored in files for the evaluate function
 
-class data_operation(Generator):
+class data_operation_generator(Generator):
+    
+    def generate(self, rng):
+        raise Exception("this just probably shouldn't ever be called")
+        return None
+
+
     def __init__(self, params):
         self.error_thresholds = params.error_thresholds
  
         i, o = params.data_types.split(':')
+        print("input,output types are ", i,o)
+        print("types are)", type(i), type(o))
         self.input_datatype = i
-        self.ouput_datatype = o
+        self.output_datatype = o
+
 
     def evaluate(self, src, tgt, hyp):
         acc_list = []
         err_list = []
 
-        if self.output_datatype == "int" :
+        if self.output_datatype == "int":
+            print("if statement okay?")
             acc_list += [0]*len(self.error_thresholds)
             for i, error_thresh in enumerate(self.error_thresholds):
                 if( abs( (tgt-hyp)/tgt) <= error_thresh):
