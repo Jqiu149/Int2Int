@@ -36,9 +36,11 @@ def get_parser():
     #extra stuff? 
     parser.add_argument("--extra_int_arg1", type=int, default=-1,
                         help="second integer argument. Not applicable for all experiments.")
-    parser.add_argument("--error_thresholds", type=json.loads, default="[]",
-                        help="list of floats f1, ...fk to be used for evaluation metrics. will report if we're f_i percent off of the target. Not applicable for all experiments.")
-    
+
+    parser.add_argument("--relative_error_thresholds", type=json.loads, default="[]",
+                        help="list of floats f1, ...fk to be used for evaluation metrics. will report if the erorr is less than f_i*tgt . Not applicable for all experiments.")
+    parser.add_argument("--flat_error_thresholds", type=json.loads, default="[]",
+                        help="list of ints or floats n1...nk to be used for evaluation metrics. will report if we're within n_i of the target. Not applicable for all experiments.")
     # main parameters
     parser.add_argument("--dump_path", type=str, default="",
                         help="Experiment dump path")

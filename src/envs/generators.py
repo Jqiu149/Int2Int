@@ -31,7 +31,8 @@ class data_operation_generator(Generator):
 
 
     def __init__(self, params):
-        self.error_thresholds = params.error_thresholds
+        self.relative_error_thresholds = params.relative_error_thresholds
+        self.flat_error_thresholds = params.flat_error_thresholds
  
         i, o = params.data_types.split(':')
         self.input_datatype = i
@@ -42,11 +43,26 @@ class data_operation_generator(Generator):
         acc_list = []
         err_list = []
 
-        if self.output_datatype == "int":
-            acc_list += [0]*len(self.error_thresholds)
-            for i, error_thresh in enumerate(self.error_thresholds):
+        acc_list_len = 0
+        err_list_len = 0
+
+        if self.output_datatype == "int" and False:
+            acc_list += [0]*n_rel_thresh
+
+            for i, error_thresh in enumerate(self.relative_error_thresholds):
                 if( abs( (tgt-hyp)/tgt) <= error_thresh):
                     acc_list[i]+=1
+
+            acc_list_len +=len(self.relative_error_thresholds)
+
+            acc_list += [0]*len(self.flat_error_thresholds)
+            for i, error_thresh in enumerate(self.flat_error_thresholds):
+                if( abs(tgt-hyp) <= error_thresh):
+                    acc_list[acc_list_len+i]+=1
+            
+            acc_list_len += len(self.flat_error_thresholds)
+
+        
 
         return 0,acc_list, err_list
 
@@ -66,7 +82,7 @@ class Sequence(Generator):
 
 
         self.extra_int_arg1 = params.extra_int_arg1
-        self.error_thresholds = params.error_thresholds
+        self.relative_error_thresholds = params.relative_error_thresholds
 
 
     # integers from 1 to maxint, log uniform distribution
@@ -155,8 +171,8 @@ class Sequence(Generator):
 
     def evaluate(self, src, tgt, hyp):
         if self.operation == "modular_add":
-            acc_list = [0]*len(self.error_thresholds)
-            for i, error_thresh in enumerate(self.error_thresholds):
+            acc_list = [0]*len(self.relative_error_thresholds)
+            for i, error_thresh in enumerate(self.relative_error_thresholds):
                 if( abs( (tgt-hyp)/tgt) <= error_thresh):
                     acc_list[i]+=1
 
