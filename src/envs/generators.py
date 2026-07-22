@@ -46,8 +46,9 @@ class data_operation_generator(Generator):
         acc_list_len = 0
         err_list_len = 0
 
-        if self.output_datatype == "int" and False:
-            acc_list += [0]*n_rel_thresh
+        if self.output_datatype == "int":
+
+            acc_list += [0]*len(self.relative_error_thresholds)
 
             for i, error_thresh in enumerate(self.relative_error_thresholds):
                 if( abs( (tgt-hyp)/tgt) <= error_thresh):
