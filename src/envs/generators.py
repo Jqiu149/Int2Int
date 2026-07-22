@@ -30,9 +30,14 @@ class Sequence(Generator):
         self.minint = params.minint
         self.dims = dims
         self.modulus = params.modulus
-        self.extra_int_arg1 = params.extra_int_arg1
-    # integers from 1 to maxint, log uniform distribution
 
+
+
+        self.extra_int_arg1 = params.extra_int_arg1
+        self.error_thresholds = params.error_thresholds
+
+
+    # integers from 1 to maxint, log uniform distribution
     def integer_loguniform_sequence(self, len, rng, type=None, max=None):
         maxint = self.maxint if max is None else max
         lgs = math.log10(maxint)*rng.rand(len)
@@ -117,7 +122,14 @@ class Sequence(Generator):
         return None
 
     def evaluate(self, src, tgt, hyp):
-                        
+        if self.operation == "modular_add":
+            acc_list = [0]*len(self.error_thresholds)
+            for i, error_thresh in enumerate(self.error_thresholds):
+                if( abs( (tgt-hyp)/tgt) <= error_thresh):
+                    acc_list[i]+=1
+
+            return 0, acc_list, []
+
         return 0, [],[]
 
 class maxGenerator(Sequence):

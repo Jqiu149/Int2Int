@@ -328,7 +328,7 @@ class ArithmeticEnvironment(object):
         if self.operation in ["fraction_add", "fraction_product", "fraction_simplify", "fraction_round", "fraction_determinant"]:
             return 0
         elif self.operation in ["gcd", "modular_add", "modular_mul"]:
-            v1, v2 = self.output_encoder.decode(xi)
+            v1, v2 = self.input_encoder.decode(xi)
             
             
             return max( math.log10(abs(v1)), math.log10(abs(v2))) + 1
@@ -395,15 +395,15 @@ class ArithmeticEnvironment(object):
 
     def check_prediction(self, src, tgt, hyp):
         w = self.output_encoder.decode(hyp)
+
         if w is None:
             return -1,[],[], None if self.export_pred else -1,[],[]
         if len(hyp) == 0 or len(tgt) == 0:
             return -1,[],[], None if self.export_pred else -1,[],[]
         if hyp == tgt:
             return 2,[],[], w if self.export_pred else 2,[],[]
-
-        a, b, c = self.generator.evaluate(self.input_encoder.decode(src), self.input_encoder.decode(tgt), w)
-        return a, b, c, w if self.export_pred else a, b, c
+        a, b, c = self.generator.evaluate(self.input_encoder.decode(src), self.output_encoder.decode(tgt), w)
+        return (a, b, c, w) if self.export_pred else (a, b, c)
 
 
     def create_train_iterator(self, task, data_path, params):

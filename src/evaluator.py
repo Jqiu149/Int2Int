@@ -42,7 +42,7 @@ def check_hypothesis(eq):
     if env.export_pred:
         try:
             m, s1, s2, nb = env.check_prediction(src, tgt, hyp)
-        except Exception:
+        except Exception as e:
             m = -1
             s1 = []
             s2 = []
@@ -50,7 +50,7 @@ def check_hypothesis(eq):
     else: 
         try:
             m, s1, s2 = env.check_prediction(src, tgt, hyp)
-        except Exception:
+        except Exception as e:
             m = -1
             s1 = []
             s2 = []
@@ -386,9 +386,9 @@ class Evaluator(object):
                     if is_valid > 0:
                         n_valid[nb_ops[i]] += 1
                         valid[i] = 1
-                    for em in range(env.n_eval_metrics > 0):
+                    for em in range(env.n_eval_metrics ):
                         eval_metrics[em] += gen[f"is_valid{em+1}"]  
-                    for em in range(env.n_error_metrics > 0):
+                    for em in range(env.n_error_metrics):
                         error_metrics[em] += gen[f"is_error{em+1}"]  
 
                     if env.export_pred:
@@ -433,10 +433,10 @@ class Evaluator(object):
             100.0 * (n_perfect_match + n_correct) / _n_total
         )
 
-        for em in range(env.n_eval_metrics > 0):
-            scores[f"{data_type}_{task}_acc_eval{em+1}"] = 100.0*(n_perfect_match + eval_metrics[em]) / _n_total  
-        for em in range(env.n_error_metrics > 0):
-            scores[f"{data_type}_{task}_acc_error{em+1}"] = 100.0*error_metrics[em] / _n_total 
+        for em in range(env.n_eval_metrics ):
+            scores[f"{data_type}_{task}_acc_eval{em+1}"] = (100.0*(n_perfect_match + eval_metrics[em]) / _n_total).item()
+        for em in range(env.n_error_metrics):
+            scores[f"{data_type}_{task}_acc_error{em+1}"] = (100.0*error_metrics[em] / _n_total ).item()
 
                         
         # per class perplexity and prediction accuracy
