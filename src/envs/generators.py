@@ -20,6 +20,31 @@ class Generator(ABC):
     def evaluate(self, src, tgt, hyp):
         pass
 
+
+#class we're using for when we're training on data stored in files for the evaluate function
+
+class data_operation(Generator):
+    def __init__(self, params):
+        self.error_thresholds = params.error_thresholds
+ 
+        i, o = params.data_types.split(':')
+        self.input_datatype = i
+        self.ouput_datatype = o
+
+    def evaluate(self, src, tgt, hyp):
+        acc_list = []
+        err_list = []
+
+        if self.output_datatype == "int" :
+            acc_list += [0]*len(self.error_thresholds)
+            for i, error_thresh in enumerate(self.error_thresholds):
+                if( abs( (tgt-hyp)/tgt) <= error_thresh):
+                    acc_list[i]+=1
+
+        return 0,acc_list, err_list
+
+
+
 # empty for now
 class Sequence(Generator):
     def __init__(self, params, dims):
