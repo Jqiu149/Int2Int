@@ -34,8 +34,6 @@ class data_operation_generator(Generator):
         self.error_thresholds = params.error_thresholds
  
         i, o = params.data_types.split(':')
-        print("input,output types are ", i,o)
-        print("types are)", type(i), type(o))
         self.input_datatype = i
         self.output_datatype = o
 
@@ -45,7 +43,6 @@ class data_operation_generator(Generator):
         err_list = []
 
         if self.output_datatype == "int":
-            print("if statement okay?")
             acc_list += [0]*len(self.error_thresholds)
             for i, error_thresh in enumerate(self.error_thresholds):
                 if( abs( (tgt-hyp)/tgt) <= error_thresh):
