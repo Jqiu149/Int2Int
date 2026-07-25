@@ -163,7 +163,9 @@ class PositionalRealTruncated(PositionalInts):
 
 
 
-def insertRandomSpaces(inp, insertPeriod, minSpaces=0, maxSpaces=10):
+#inp is a list
+#insert period is how many list entries are betwen the positions we can insert the X char
+def insertRandomX(inp, insertPeriod, minSpaces=0, maxSpaces=10):
     assert type(inp) == list
     assert type(minSpaces) == int and type(maxSpaces) ==int and type(insertPeriod) == int 
     res = []
@@ -174,7 +176,7 @@ def insertRandomSpaces(inp, insertPeriod, minSpaces=0, maxSpaces=10):
     
     for i in range(numInserts):
         res+=inp[i*insertPeriod:i*insertPeriod+insertPeriod]
-        randomSpaces = [" "] * random.randrange(minSpaces, maxSpaces)
+        randomSpaces = ["X"] * random.randrange(minSpaces, maxSpaces)
         res+=randomSpaces
 
     res+=inp[(numInserts)* insertPeriod: ]
@@ -409,7 +411,7 @@ class PositionalIntsPaired(Encoder):
 class PositionalIntsPairedAddedSpaces(PositionalIntsPaired):
     def __init__(self, base=10, includeSigns = True, reverseOrder = False):
         super().__init__(base, includeSigns, reverseOrder)
-        self.symbols.append(" ")
+        self.symbols.append("X")
 
     def encode(self, inputs):
         originalRes = super().encode(inputs)
@@ -417,10 +419,10 @@ class PositionalIntsPairedAddedSpaces(PositionalIntsPaired):
         digitRepLength = 6 if self.includeSigns else 4
         numDigits = len(originalRes)/digitRepLength
 
-        return insertRandomSpaces(originalRes, digitRepLength, 0, 7) 
+        return insertRandomX(originalRes, digitRepLength, 0, 7) 
 
     def parse(self, lst):
-        return super().parse([x  for x in lst if x!= " "])
+        return super().parse([x  for x in lst if x!= "X"])
 
 class PositionalIntsPairedPadded(PositionalIntsPaired):
     """
